@@ -60,25 +60,15 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     $contentInFile = file_get_contents($sourceFiles[$i]['name']); // дёргаем контент целиком
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
     $LineByLine = new LineByLine(); //новый объект
-    $contentInArray = $LineByLine->stripping($contentInFile); //Получаем содержимое файла по строкам в массиве
+    $contentInArray = $LineByLine->stripping($contentInFile); //преобразуем содержимое файла в массив
     //echo "Содержимое файла по строкам в массиве:\n"; var_dump($contentInArray); echo "\n";
-
-    
-    $contentInFile = FALSE;
-    
-    /// @TODO Переделать в метод, вынести в класс
-    foreach ($contentInArray as $key => $val) {
-      $contentInFile .= $val . "\n";
-    }
-    $contentInFile = substr($contentInFile, 0, -1 );  ///< Отрубаем последний перенос
+    $contentInFile = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
 
-    
-    
-    echo 'Файл из массива '.$sourceFiles[$i]['name']."\n";
-    echo 'Длина пути к файлу '.$lenghtInPath."\n";
+    echo 'Файл из массива ' . $sourceFiles[$i]['name'] . "\n";
+    echo 'Длина пути к файлу ' . $lenghtInPath . "\n";
     //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
-    echo '$outDir ='.$outDir."\n";
+    echo '$outDir =' . $outDir . "\n";
     $outFilePath = $outDir . "/" . mb_substr($sourceFiles[$i]['name'], $lenghtInPath + 1);
     echo "Путь целевого файла " . $outFilePath . "\n";
 
@@ -87,16 +77,17 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     fclose($targetFile); //закрываем
 
     echo "-------------------------------------------------\n";
-  } else {
+  }
+  else {
     //Если нулевой длины, проверяем, директория ли
     $pos = mb_strpos($sourceFiles[$i]['name'], "/", $lenghtOutPath, "CP1251"); // Есть ли в последней позиции слэш
-    
+// @TODO Разобраться с вычислением длины строки
     if ($pos === false) {
       echo "Это файл нулевой длины\n";
     }
     else {
-      echo '$pos = '.$pos."\n";
-      echo '$lenghtOutPath = '.$lenghtOutPath."\n";
+      echo '$pos = ' . $pos . "\n";
+      echo '$lenghtOutPath = ' . $lenghtOutPath . "\n";
       echo $lenghtInPath . ' Директория из массива ' . $sourceFiles[$i]['name'] . "\n";
       // если же директория
       $outDirPath = $outDir . "/" . mb_substr($sourceFiles[$i]['name'], $lenghtInPath + 1);
