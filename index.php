@@ -4,7 +4,6 @@
  * @file 
  * Главный файл
  * 
- * @ TODO протестировать!
  */
 include 'include/functions.php';
 include 'include/classes.php';
@@ -49,9 +48,8 @@ else {
 }
 echo "---\n";
 
-$sourceFiles = (getFileList($inDir, TRUE)); // получаем листинг
-var_dump($sourceFiles);
-//print_r($sourceFiles);
+$sourceFiles = (getFileList($inDir, TRUE, FALSE, TRUE)); // получаем листинг
+//var_dump($sourceFiles);
 //цикл перебора массива файлов
 for ($i = 0; $i < count($sourceFiles); $i++) {
   //Если файл непустой файлов 
@@ -81,25 +79,24 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   }
   else {
     //Если нулевой длины, проверяем, директория ли
-    $pos = mb_strpos($sourceFiles[$i]['name'], "/", mb_strlen ($sourceFiles[$i]['name'])-1); // Есть ли в последней позиции слэш
-// @TODO Разобраться с вычислением длины строки
+    $pos = mb_strpos($sourceFiles[$i]['name'], "/", mb_strlen($sourceFiles[$i]['name']) - 1); // Есть ли в последней позиции слэш
     echo '$pos = ' . $pos . "\n";
     if ($pos === false) {
       echo "Это файл нулевой длины!\n";
-      echo $sourceFiles[$i]['name']."\n";
+      echo $sourceFiles[$i]['name'] . "\n";
       echo "-------------------------------------------------\n";
     }
     else {
 
-      echo '$lenghtInPath = ' . $lenghtInPath."\n";
+      echo '$lenghtInPath = ' . $lenghtInPath . "\n";
       echo '$lenghtOutPath = ' . $lenghtOutPath . "\n";
-   
+
       echo ' Директория из массива ' . $sourceFiles[$i]['name'] . "\n";
       // если же директория
       $outDirPath = $outDir . "/" . mb_substr($sourceFiles[$i]['name'], $lenghtInPath + 1);
       echo "Путь целевой директории " . $outDirPath . "\n";
       mkdir($outDirPath, 0755, true); // создаём директорию
-       echo "-------------------------------------------------\n";
+      echo "-------------------------------------------------\n";
     }
   }
 }

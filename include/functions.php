@@ -5,13 +5,14 @@
  */
     
 /**
- * Сканирование директорий и получение списка объектов
+ *  Сканирование директорий и получение списка объектов
  * @param string $dir Директория для сканирования
- * @param type $recurse Рекурсивнаое сканирование
- * @param type $depth Глубина (false = без ограничений)
- * @return type Массив директорий и признаков
- */
-function getFileList($dir, $recurse = false, $depth = false) {
+ * @param boolean $recurse Рекурсивнаое сканирование
+ * @param int $depth Глубина (false = без ограничений)
+ * @param boolean $hidden Учитывать скрытые файлы (с точки). По умолчанию FALSE
+ * @return array Массив директорий и признаков
+ *  */
+function getFileList($dir, $recurse = FALSE, $depth = FALSE, $hidden = FALSE) {  
   // массив, хранящий возвращаемое значение
   $retval = array();
 
@@ -24,7 +25,7 @@ function getFileList($dir, $recurse = false, $depth = false) {
   while (false !== ($entry = $d->read())) {
 
     // пропустить скрытые файлы
-    if ($entry[0] == ".")
+    if (($entry[0] == "." && $hidden == FALSE) OR $entry == "." OR $entry == "..")
       continue;
     if (is_dir("$dir$entry")) {
       $retval[] = array(
@@ -34,10 +35,10 @@ function getFileList($dir, $recurse = false, $depth = false) {
       );
       if ($recurse && is_readable("$dir$entry/")) {
         if ($depth === false) {
-          $retval = array_merge($retval, getFileList("$dir$entry/", true));
+          $retval = array_merge($retval, getFileList("$dir$entry/", TRUE, FALSE, $hidden));
         }
         elseif ($depth > 0) {
-          $retval = array_merge($retval, getFileList("$dir$entry/", true, $depth - 1));
+          $retval = array_merge($retval, getFileList("$dir$entry/", TRUE, $depth - 1, $hidden));
         }
       }
     }
@@ -57,12 +58,12 @@ function getFileList($dir, $recurse = false, $depth = false) {
 /**
  * 
  * Функция обрезания текста по вхождениям
- * @param type $text Текст на входе
- * @param type $startEntry Начальное вхождение
- * @param type $endEntry Конечное вхождение
- * @param type $includeStart Устарело
- * @param type $includeEnd Устарело
- * @return type text Текст на выходе
+ * @param string $text Текст на входе
+ * @param string $startEntry Начальное вхождение
+ * @param string $endEntry Конечное вхождение
+ * @param boolean $includeStart Устарело
+ * @param boolean $includeEnd Устарело
+ * @return text Текст на выходе
  * @todo Разобраться с устаревшими параметрами
  */
 function truncateText($text, $startEntry, $endEntry, $includeStart = FALSE, $includeEnd = FALSE) {
@@ -105,9 +106,9 @@ function truncateText($text, $startEntry, $endEntry, $includeStart = FALSE, $inc
 /**
  *
  * Функция вырезания текста по вхождениям
- * @param type $text Текст на входе
- * @param type $startEntry Начальное вхождение
- * @param type $endEntry Конечное вхождение
+ * @param string $text Текст на входе
+ * @param string $startEntry Начальное вхождение
+ * @param string $endEntry Конечное вхождение
  * @return string Текст на выходе
  * 
  */
