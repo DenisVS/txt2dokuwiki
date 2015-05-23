@@ -4,7 +4,7 @@
  * @file 
  * Главный файл
  * 
- * 
+ * @ TODO протестировать!
  */
 include 'include/functions.php';
 include 'include/classes.php';
@@ -51,11 +51,12 @@ echo "---\n";
 
 $sourceFiles = (getFileList($inDir, TRUE)); // получаем листинг
 var_dump($sourceFiles);
-print_r($sourceFiles);
+//print_r($sourceFiles);
 //цикл перебора массива файлов
 for ($i = 0; $i < count($sourceFiles); $i++) {
   //Если файл непустой файлов 
   if ($sourceFiles[$i]['size'] > 0) {
+    echo "Размер > 0!\n";
     echo "Обрабатывается " . $sourceFiles[$i]['name'] . "\n";
     $contentInFile = file_get_contents($sourceFiles[$i]['name']); // дёргаем контент целиком
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
@@ -80,19 +81,25 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   }
   else {
     //Если нулевой длины, проверяем, директория ли
-    $pos = mb_strpos($sourceFiles[$i]['name'], "/", $lenghtOutPath, "CP1251"); // Есть ли в последней позиции слэш
+    $pos = mb_strpos($sourceFiles[$i]['name'], "/", mb_strlen ($sourceFiles[$i]['name'])-1); // Есть ли в последней позиции слэш
 // @TODO Разобраться с вычислением длины строки
+    echo '$pos = ' . $pos . "\n";
     if ($pos === false) {
-      echo "Это файл нулевой длины\n";
+      echo "Это файл нулевой длины!\n";
+      echo $sourceFiles[$i]['name']."\n";
+      echo "-------------------------------------------------\n";
     }
     else {
-      echo '$pos = ' . $pos . "\n";
+
+      echo '$lenghtInPath = ' . $lenghtInPath."\n";
       echo '$lenghtOutPath = ' . $lenghtOutPath . "\n";
-      echo $lenghtInPath . ' Директория из массива ' . $sourceFiles[$i]['name'] . "\n";
+   
+      echo ' Директория из массива ' . $sourceFiles[$i]['name'] . "\n";
       // если же директория
       $outDirPath = $outDir . "/" . mb_substr($sourceFiles[$i]['name'], $lenghtInPath + 1);
       echo "Путь целевой директории " . $outDirPath . "\n";
       mkdir($outDirPath, 0755, true); // создаём директорию
+       echo "-------------------------------------------------\n";
     }
   }
 }
