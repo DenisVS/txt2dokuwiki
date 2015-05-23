@@ -7,6 +7,7 @@
  */
 include 'include/functions.php';
 include 'include/classes.php';
+$LineByLine = new LineByLine(); //новый объект
 
 if (isset($argv[1])) {
   $lenghtInPath = mb_strlen($argv[1]);
@@ -58,7 +59,6 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     echo "Обрабатывается " . $sourceFiles[$i]['name'] . "\n";
     $contentInFile = file_get_contents($sourceFiles[$i]['name']); // дёргаем контент целиком
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
-    $LineByLine = new LineByLine(); //новый объект
     $contentInArray = $LineByLine->stripping($contentInFile); //преобразуем содержимое файла в массив
     //echo "Содержимое файла по строкам в массиве:\n"; var_dump($contentInArray); echo "\n";
     $contentInFile = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
