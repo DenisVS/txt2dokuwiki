@@ -59,8 +59,44 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     echo "Обрабатывается " . $sourceFiles[$i]['name'] . "\n";
     $contentInFile = file_get_contents($sourceFiles[$i]['name']); // дёргаем контент целиком
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
+
     $contentInArray = $LineByLine->stripping($contentInFile); //преобразуем содержимое файла в массив
     //echo "Содержимое файла по строкам в массиве:\n"; var_dump($contentInArray); echo "\n";
+
+
+
+
+    unset($asterisksStrings);
+    foreach ($contentInArray as $key => $val) {
+      //$dcdc = $val;
+      //извлекаем все строки со звёздочками
+      if (preg_match('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', $val)) {
+        $asterisksBefore = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', '$1', $val));
+
+        $asteriskLenght = strlen($asterisksBefore) . "\n"; //выводим одни звёздочки
+        echo $asterisksBefore . "\n"; //выводим одни звёздочки
+        echo $asteriskLenght . "\n"; //выводим одни звёздочки
+        $asterisksStrings[] = (int) $asteriskLenght;
+      }
+    }
+    if (isset($asterisksStrings)) {
+      //Сортировка массива
+      //$asterisksStrings = array_unique($asterisksStrings); //уникализируем значения
+      //sort($asterisksStrings); //сортируем массив
+      var_dump($asterisksStrings);
+      $minElement = min($asterisksStrings);
+      $maxElement = max($asterisksStrings);
+      echo 'Минимальное и максимальное значение: ' . $minElement . "  " . $maxElement . "\n";
+    }
+
+//    foreach ($asterisksStrings as $key => $val) {
+//      if ($maxElement < $val) max
+//    }
+
+
+
+
+
     $contentInFile = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
 
