@@ -57,17 +57,24 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   if ($sourceFiles[$i]['size'] > 0) {
     echo "Размер > 0!\n";
     echo "Обрабатывается " . $sourceFiles[$i]['name'] . "\n";
-    echo "EXTENSION: " . pathinfo($sourceFiles[$i]['name'], PATHINFO_EXTENSION) . "\n";
-    
-    $fileName = pathinfo($sourceFiles[$i]['name'], PATHINFO_BASENAME); // файл отдельно
-    echo "File name:". $fileName."\n";
-    if (isset($fileName)) {
-      $ext = pathinfo($fileName, PATHINFO_EXTENSION); //расширение отдельно
-      if ($ext == '') {
-        echo "NOEXT: " . $sourceFiles[$i]['name'] . "\n";
-      }
+
+    $baseName = pathinfo($sourceFiles[$i]['name'], PATHINFO_BASENAME); // файл без пути
+    $extension = pathinfo($sourceFiles[$i]['name'], PATHINFO_EXTENSION); //расширение отдельно
+    $filename = pathinfo($sourceFiles[$i]['name'], PATHINFO_FILENAME); //расширение отдельно
+    //если без расширения, определить тип
+    if ($extension == '') {
+      $filetype = trim(shell_exec('/usr/bin/file -i ' . $sourceFiles[$i]['name'] . ' | /usr/bin/awk \'{print $2}\'')) . "\n";
+      echo $sourceFiles[$i]['name'] . " FILETYPE: " . $filetype . "\n";
+    }
+    //если без имени, но с расширением
+    if ($extension != '' && $filename == '') {
+      echo "NONAME: " . $sourceFiles[$i]['name'] . "\n";
     }
 
+
+
+
+//		$ipList = shell_exec ("/usr/local/bin/sudo /sbin/ipfw table 4 add $ip");
 
     $contentInFile = file_get_contents($sourceFiles[$i]['name']); // дёргаем контент целиком
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
