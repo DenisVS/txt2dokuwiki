@@ -50,18 +50,40 @@ else {
 echo "---\n";
 
 $sourceFiles = (getFileList($inDir, TRUE, FALSE, TRUE)); // получаем листинг
-//var_dump($sourceFiles);
+var_dump($sourceFiles);
 //цикл перебора массива файлов
 for ($i = 0; $i < count($sourceFiles); $i++) {
   //Если файл непустой файлов 
   if ($sourceFiles[$i]['size'] > 0) {
     echo "Размер > 0!\n";
     echo "Обрабатывается " . $sourceFiles[$i]['name'] . "\n";
+    echo "EXTENSION: " . pathinfo($sourceFiles[$i]['name'], PATHINFO_EXTENSION) . "\n";
+    
+    $fileName = pathinfo($sourceFiles[$i]['name'], PATHINFO_BASENAME); // файл отдельно
+    echo "File name:". $fileName."\n";
+    if (isset($fileName)) {
+      $ext = pathinfo($fileName, PATHINFO_EXTENSION); //расширение отдельно
+      if ($ext == '') {
+        echo "NOEXT: " . $sourceFiles[$i]['name'] . "\n";
+      }
+    }
+
+
     $contentInFile = file_get_contents($sourceFiles[$i]['name']); // дёргаем контент целиком
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
 
     $contentInArray = $LineByLine->stripping($contentInFile); //преобразуем содержимое файла в массив
     //echo "Содержимое файла по строкам в массиве:\n"; var_dump($contentInArray); echo "\n";
+//========================
+//разделение текстовых и бинарных файлов
+    if (preg_match('/\A\S{1,}\z/m', $contentInFile)) {
+      echo "Бинарник!\n";
+    }
+    else {
+      echo "Текстовик!\n";
+    }
+
+
 
 
 
@@ -69,41 +91,32 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     unset($asterisksStrings);
     foreach ($contentInArray as $key => $val) {
       //$dcdc = $val;
-      //извлекаем все строки со звёздочками
+      //извлекаем все строки со звёздочками, содержащие текст
       if (preg_match('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', $val)) {
         $asterisksBefore = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', '$1', $val));
-
-        $asteriskLenght = strlen($asterisksBefore) . "\n"; //выводим одни звёздочки
-        echo $asterisksBefore . "\n"; //выводим одни звёздочки
-        echo $asteriskLenght . "\n"; //выводим одни звёздочки
-        $asterisksStrings[] = (int) $asteriskLenght;
+        //echo "String: " . $val . "\n"; //выводим строку со звёздочками
+        $asteriskLenght = (int) strlen($asterisksBefore); //длина "одни звёздочки" в цифрах
+        //echo "Lenght: " . $asteriskLenght . ". Asterisks: " . $asterisksBefore . "\n"; //выводим длину "одни звёздочки"
+        $asterisksStrings[] = $asteriskLenght;
       }
     }
     if (isset($asterisksStrings)) {
-      //Сортировка массива
-      //$asterisksStrings = array_unique($asterisksStrings); //уникализируем значения
-      //sort($asterisksStrings); //сортируем массив
-      var_dump($asterisksStrings);
+      //var_dump($asterisksStrings);
       $minElement = min($asterisksStrings);
       $maxElement = max($asterisksStrings);
-      echo 'Минимальное и максимальное значение: ' . $minElement . "  " . $maxElement . "\n";
+      //echo 'Минимальное и максимальное значение: ' . $minElement . "  " . $maxElement . "\n";
     }
 
 //    foreach ($asterisksStrings as $key => $val) {
 //      if ($maxElement < $val) max
 //    }
-
-
-
-
-
+//======================================
     $contentInFile = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
-
-    echo 'Файл из массива ' . $sourceFiles[$i]['name'] . "\n";
-    echo 'Длина пути к файлу ' . $lenghtInPath . "\n";
+    //echo 'Файл из массива ' . $sourceFiles[$i]['name'] . "\n";
+    //echo 'Длина пути к файлу ' . $lenghtInPath . "\n";
     //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
-    echo '$outDir =' . $outDir . "\n";
+    //echo '$outDir =' . $outDir . "\n";
     $outFilePath = $outDir . "/" . mb_substr($sourceFiles[$i]['name'], $lenghtInPath + 1);
     echo "Путь целевого файла " . $outFilePath . "\n";
 
@@ -116,7 +129,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   else {
     //Если нулевой длины, проверяем, директория ли
     $pos = mb_strpos($sourceFiles[$i]['name'], "/", mb_strlen($sourceFiles[$i]['name']) - 1); // Есть ли в последней позиции слэш
-    echo '$pos = ' . $pos . "\n";
+    //echo '$pos = ' . $pos . "\n";
     if ($pos === false) {
       echo "Это файл нулевой длины!\n";
       echo $sourceFiles[$i]['name'] . "\n";
@@ -124,8 +137,8 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     }
     else {
 
-      echo '$lenghtInPath = ' . $lenghtInPath . "\n";
-      echo '$lenghtOutPath = ' . $lenghtOutPath . "\n";
+      //echo '$lenghtInPath = ' . $lenghtInPath . "\n";
+      //echo '$lenghtOutPath = ' . $lenghtOutPath . "\n";
 
       echo ' Директория из массива ' . $sourceFiles[$i]['name'] . "\n";
       // если же директория
