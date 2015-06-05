@@ -8,19 +8,18 @@
 include 'include/functions.php';
 include 'include/classes.php';
 $LineByLine = new LineByLine(); //новый объект
+$inPath = new ControlEdgeSymbol (); //новый объект
 
 if (isset($argv[1])) {
-  $lenghtInPrefixPath = mb_strlen($argv[1]);
-  $pos = mb_strpos($argv[1], "/", $lenghtInPrefixPath - 1); // Есть ли в последней позиции слэш
-  echo $lenghtInPrefixPath . "  это введённая длина исходной директории\n";
-  echo $pos . "  это позиция слэша\n";
-  if ($pos === false) {
-    $inDir = $argv[1];
-  }
-  else {
-    $inDir = substr($argv[1], 0, $lenghtInPrefixPath - 1);    // отрубаем последний слэш  
-    $lenghtInPrefixPath = $lenghtInPrefixPath - 1; // и длину приводим в соответствии с действительностью
-  }
+  $inPath->text = $argv[1];
+  $inPath->symbol = '/';
+  $inPath->symbolSholdBe = 0;
+  $inPath->position = 'END';
+  $inDir = $inPath->controlStartEndSymbol()['text'];
+  $lenghtInPrefixPath = $inPath->controlStartEndSymbol()['lenght'];
+
+//  var_dump($inDir);
+
   echo 'Директория исходных файлов ' . $inDir . "\n";
 }
 else {
@@ -111,7 +110,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   }
   else {
     //Если нулевой длины, проверяем, директория ли? Ищем в конце слэш.
-    $pos = mb_strpos($sourceFiles[$i]['name'], "/", mb_strlen($sourceFiles[$i]['name']) - 1); 
+    $pos = mb_strpos($sourceFiles[$i]['name'], "/", mb_strlen($sourceFiles[$i]['name']) - 1);
     if ($pos === false) {
       echo "Это файл нулевой длины!\n";
       echo $sourceFiles[$i]['name'] . "\n";

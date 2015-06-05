@@ -141,3 +141,19 @@ function removeExcess($text, $startEntry, $endEntry) {
   $result = $contentHead.$contentTail;
   return $result;
 }
+
+
+/**
+ * Функция проверки наличия слэша в конце строки
+ * @param string $text Проверяемая строка
+ * @return boolean
+ */
+function checkingForSlash($text) {
+  $pos = mb_strpos($text, "/", mb_strlen($text) - 1);
+  if ($pos === false) {
+    return FALSE;
+  }
+  else {
+    return TRUE;
+    }
+}
