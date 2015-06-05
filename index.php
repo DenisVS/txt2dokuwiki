@@ -71,54 +71,31 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       echo "NONAME: " . $sourceFiles[$i]['name'] . "\n";
     }
 
-
-
-
-//		$ipList = shell_exec ("/usr/local/bin/sudo /sbin/ipfw table 4 add $ip");
-
-    $contentInFile = file_get_contents($sourceFiles[$i]['name']); // дёргаем контент целиком
+    $inFileContent = file_get_contents($sourceFiles[$i]['name']); // дёргаем контент целиком
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
 
-    $contentInArray = $LineByLine->stripping($contentInFile); //преобразуем содержимое файла в массив
+    $contentInArray = $LineByLine->stripping($inFileContent); //преобразуем содержимое файла в массив
     //echo "Содержимое файла по строкам в массиве:\n"; var_dump($contentInArray); echo "\n";
-//========================
-//разделение текстовых и бинарных файлов
-    if (preg_match('/\A\S{1,}\z/m', $contentInFile)) {
-      echo "Бинарник!\n";
-    }
-    else {
-      echo "Текстовик!\n";
-    }
-
-
-
-
-
-
-    unset($asterisksStrings);
-    foreach ($contentInArray as $key => $val) {
-      //$dcdc = $val;
-      //извлекаем все строки со звёздочками, содержащие текст
-      if (preg_match('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', $val)) {
-        $asterisksBefore = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', '$1', $val));
-        //echo "String: " . $val . "\n"; //выводим строку со звёздочками
-        $asteriskLenght = (int) strlen($asterisksBefore); //длина "одни звёздочки" в цифрах
-        //echo "Lenght: " . $asteriskLenght . ". Asterisks: " . $asterisksBefore . "\n"; //выводим длину "одни звёздочки"
-        $asterisksStrings[] = $asteriskLenght;
-      }
-    }
-    if (isset($asterisksStrings)) {
-      //var_dump($asterisksStrings);
-      $minElement = min($asterisksStrings);
-      $maxElement = max($asterisksStrings);
-      //echo 'Минимальное и максимальное значение: ' . $minElement . "  " . $maxElement . "\n";
-    }
-
-//    foreach ($asterisksStrings as $key => $val) {
-//      if ($maxElement < $val) max
+//======================================
+//    unset($asterisksStrings);
+//    foreach ($contentInArray as $key => $val) {
+//      //$dcdc = $val;
+//      //извлекаем все строки со звёздочками, содержащие текст
+//      if (preg_match('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', $val)) {
+//        $asterisksBefore = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', '$1', $val));
+//        //echo "String: " . $val . "\n"; //выводим строку со звёздочками
+//        $asteriskLenght = (int) strlen($asterisksBefore); //длина "одни звёздочки" в цифрах
+//        //echo "Lenght: " . $asteriskLenght . ". Asterisks: " . $asterisksBefore . "\n"; //выводим длину "одни звёздочки"
+//        $asterisksStrings[] = $asteriskLenght;
+//      }
+//    }
+//    if (isset($asterisksStrings)) {
+//      $minElement = min($asterisksStrings);
+//      $maxElement = max($asterisksStrings);
+//      //echo 'Минимальное и максимальное значение: ' . $minElement . "  " . $maxElement . "\n";
 //    }
 //======================================
-    $contentInFile = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
+    $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
     //echo 'Файл из массива ' . $sourceFiles[$i]['name'] . "\n";
     //echo 'Длина пути к файлу ' . $lenghtInPath . "\n";
@@ -128,29 +105,24 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     echo "Путь целевого файла " . $outFilePath . "\n";
 
     $targetFile = fopen($outFilePath, 'a') or die("can't open file");
-    fwrite($targetFile, $contentInFile); //выводим в файл
+    fwrite($targetFile, $outFileContent); //выводим в файл
     fclose($targetFile); //закрываем
 
     echo "-------------------------------------------------\n";
   }
   else {
-    //Если нулевой длины, проверяем, директория ли
-    $pos = mb_strpos($sourceFiles[$i]['name'], "/", mb_strlen($sourceFiles[$i]['name']) - 1); // Есть ли в последней позиции слэш
-    //echo '$pos = ' . $pos . "\n";
+    //Если нулевой длины, проверяем, директория ли? Ищем в конце слэш.
+    $pos = mb_strpos($sourceFiles[$i]['name'], "/", mb_strlen($sourceFiles[$i]['name']) - 1); 
     if ($pos === false) {
       echo "Это файл нулевой длины!\n";
       echo $sourceFiles[$i]['name'] . "\n";
       echo "-------------------------------------------------\n";
     }
     else {
-
-      //echo '$lenghtInPath = ' . $lenghtInPath . "\n";
-      //echo '$lenghtOutPath = ' . $lenghtOutPath . "\n";
-
-      echo ' Директория из массива ' . $sourceFiles[$i]['name'] . "\n";
       // если же директория
+      echo 'Директория на входе ' . $sourceFiles[$i]['name'] . "\n";
       $outDirPath = $outDir . "/" . mb_substr($sourceFiles[$i]['name'], $lenghtInPath + 1);
-      echo "Путь целевой директории " . $outDirPath . "\n";
+      echo 'Директория на выходе ' . $outDirPath . "\n";
       mkdir($outDirPath, 0755, true); // создаём директорию
       echo "-------------------------------------------------\n";
     }
