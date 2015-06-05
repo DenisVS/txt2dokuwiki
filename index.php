@@ -10,16 +10,16 @@ include 'include/classes.php';
 $LineByLine = new LineByLine(); //новый объект
 
 if (isset($argv[1])) {
-  $lenghtInPath = mb_strlen($argv[1]);
-  $pos = mb_strpos($argv[1], "/", $lenghtInPath - 1); // Есть ли в последней позиции слэш
-  echo $lenghtInPath . "  это введённая длина исходной директории\n";
+  $lenghtInPrefixPath = mb_strlen($argv[1]);
+  $pos = mb_strpos($argv[1], "/", $lenghtInPrefixPath - 1); // Есть ли в последней позиции слэш
+  echo $lenghtInPrefixPath . "  это введённая длина исходной директории\n";
   echo $pos . "  это позиция слэша\n";
   if ($pos === false) {
     $inDir = $argv[1];
   }
   else {
-    $inDir = substr($argv[1], 0, $lenghtInPath - 1);    // отрубаем последний слэш  
-    $lenghtInPath = $lenghtInPath - 1; // и длину приводим в соответствии с действительностью
+    $inDir = substr($argv[1], 0, $lenghtInPrefixPath - 1);    // отрубаем последний слэш  
+    $lenghtInPrefixPath = $lenghtInPrefixPath - 1; // и длину приводим в соответствии с действительностью
   }
   echo 'Директория исходных файлов ' . $inDir . "\n";
 }
@@ -98,10 +98,9 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
     //echo 'Файл из массива ' . $sourceFiles[$i]['name'] . "\n";
-    //echo 'Длина пути к файлу ' . $lenghtInPath . "\n";
+    echo 'Длина пути к файлу ' . $lenghtInPrefixPath . "\n";
     //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
-    //echo '$outDir =' . $outDir . "\n";
-    $outFilePath = $outDir . "/" . mb_substr($sourceFiles[$i]['name'], $lenghtInPath + 1);
+    $outFilePath = $outDir . "/" . mb_substr($sourceFiles[$i]['name'], $lenghtInPrefixPath + 1);
     echo "Путь целевого файла " . $outFilePath . "\n";
 
     $targetFile = fopen($outFilePath, 'a') or die("can't open file");
@@ -121,7 +120,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     else {
       // если же директория
       echo 'Директория на входе ' . $sourceFiles[$i]['name'] . "\n";
-      $outDirPath = $outDir . "/" . mb_substr($sourceFiles[$i]['name'], $lenghtInPath + 1);
+      $outDirPath = $outDir . "/" . mb_substr($sourceFiles[$i]['name'], $lenghtInPrefixPath + 1);
       echo 'Директория на выходе ' . $outDirPath . "\n";
       mkdir($outDirPath, 0755, true); // создаём директорию
       echo "-------------------------------------------------\n";
