@@ -8,15 +8,15 @@
 include 'include/functions.php';
 include 'include/classes.php';
 $LineByLine = new LineByLine(); //новый объект
-$inPath = new ControlEdgeSymbol (); //новый объект
+$path = new ControlEdgeSymbol (); //новый объект
 
 if (isset($argv[1])) {
-  $inPath->text = $argv[1];
-  $inPath->symbol = '/';
-  $inPath->symbolSholdBe = 0;
-  $inPath->position = 'END';
-  $inDir = $inPath->controlStartEndSymbol()['text'];
-  $lenghtInPrefixPath = $inPath->controlStartEndSymbol()['lenght'];
+  $path->text = $argv[1];
+  $path->symbol = '/';
+  $path->symbolSholdBe = 0;
+  $path->position = 'END';
+  $inDir = $path->controlStartEndSymbol()['text'];
+  $lenghtInPrefixPath = $path->controlStartEndSymbol()['lenght'];
 
 //  var_dump($inDir);
 
@@ -28,17 +28,13 @@ else {
 }
 
 if (isset($argv[2])) {
-  $lenghtOutPath = mb_strlen($argv[2]);
-  $pos = mb_strpos($argv[2], "/", $lenghtOutPath - 1); // Есть ли в последней позиции слэш
-  echo $lenghtOutPath . "  это введённая длина целевой директории\n";
-  echo $pos . "  это позиция слэша\n";
-  if ($pos === false) {
-    $outDir = $argv[2];
-  }
-  else {
-    $outDir = substr($argv[2], 0, $lenghtOutPath - 1);    // отрубаем последний слэш     
-    $lenghtOutPath = $lenghtOutPath - 1; // и длину приводим в соответствии с действительностью
-  }
+
+  $path->text = $argv[2];
+  $path->symbol = '/';
+  $path->symbolSholdBe = 0;
+  $path->position = 'END';
+  $outDir = $path->controlStartEndSymbol()['text'];
+  //$lenghtOutPrefixPath = $path->controlStartEndSymbol()['lenght'];
   mkdir($outDir, 0755, true);
   echo 'Директория с обработанными файлами ' . $outDir . "\n";
 }
