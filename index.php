@@ -105,9 +105,12 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     echo "-------------------------------------------------\n";
   }
   else {
-    //Если нулевой длины, проверяем, директория ли? Ищем в конце слэш.
-    $pos = mb_strpos($sourceFiles[$i]['name'], "/", mb_strlen($sourceFiles[$i]['name']) - 1);
-    if ($pos === false) {
+    //проверяем, файл ли
+    $path->text = $sourceFiles[$i]['name'];
+    $path->symbol = '/';
+    $path->position = 'END';
+    $isItDir = $path->checkingForSymbol();
+    if ($isItDir == FALSE) {
       echo "Это файл нулевой длины!\n";
       echo $sourceFiles[$i]['name'] . "\n";
       echo "-------------------------------------------------\n";
