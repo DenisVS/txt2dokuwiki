@@ -16,8 +16,8 @@ if (isset($argv[1])) {
   $path->symbolSholdBe = 0;
   $path->position = 'END';
   $inDir = $path->controlStartEndSymbol()['text'];
-  $lenghtInPrefixPath = $path->controlStartEndSymbol()['lenght'];
-
+  $lenghtInPrefixPath = $path->controlStartEndSymbol()['lenght']; //НЕ УБИРАТЬ! Из класса нельзя получить, потому что используется многократно!
+echo 'Длина пути к файлу ' . $lenghtInPrefixPath . "\n";
 //  var_dump($inDir);
 
   echo 'Директория исходных файлов ' . $inDir . "\n";
@@ -49,7 +49,8 @@ var_dump($sourceFiles);
 //цикл перебора массива файлов
 for ($i = 0; $i < count($sourceFiles); $i++) {
   $currentFileNameFromRoot = $sourceFiles[$i]['name'];  //фиксируем имя текущего файла
-echo "LOOK: ".$currentFileNameFromRoot."\n";  
+echo "LOOK: ".$currentFileNameFromRoot."\n";
+$currentFileNameInsideDir = mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1); // полный путь текущего файла внутри обрабатываемой директории (inDir)
 //Если файл непустой файлов 
   if ($sourceFiles[$i]['size'] > 0) {
     echo "Размер > 0!\n";
@@ -95,9 +96,9 @@ echo "LOOK: ".$currentFileNameFromRoot."\n";
     $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
     //echo 'Текущий файл: ' . $currentFileName . "\n";
-    echo 'Длина пути к файлу ' . $lenghtInPrefixPath . "\n";
+    
     //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
-    $outFilePath = $outDir . "/" . mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1);
+    $outFilePath = $outDir . "/" . $currentFileNameInsideDir;
     echo "Путь целевого файла " . $outFilePath . "\n";
 
     $targetFile = fopen($outFilePath, 'a') or die("can't open file");
@@ -119,7 +120,7 @@ echo "LOOK: ".$currentFileNameFromRoot."\n";
 
 //ЭТО ВСТАВКА, ДЛЯ СОЗДАНИЯ ПУСТЫХ ФАЙЛОВ.      
 //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
-      $outFilePath = $outDir . "/" . mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1);
+      $outFilePath = $outDir . "/" . $currentFileNameInsideDir;
       echo "Путь целевого файла " . $outFilePath . "\n";
       $targetFile = fopen($outFilePath, 'a') or die("can't open file"); //создаём, пусть будет?
       fclose($targetFile); //закрываем
@@ -127,7 +128,7 @@ echo "LOOK: ".$currentFileNameFromRoot."\n";
     else {
       // если же директория
       echo 'Директория на входе ' . $currentFileNameFromRoot . "\n";
-      $outDirPath = $outDir . "/" . mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1);
+      $outDirPath = $outDir . "/" . $currentFileNameInsideDir;
       echo 'Директория на выходе ' . $outDirPath . "\n";
       mkdir($outDirPath, 0755, true); // создаём директорию
       echo "-------------------------------------------------\n";
