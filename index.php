@@ -68,7 +68,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
 
     $inFileContent = file_get_contents($sourceFiles[$i]['name']); // дёргаем контент целиком
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
-
+    $currentFileName = $sourceFiles[$i]['name'];  //фиксируем имя ткщего файла
     $contentInArray = $LineByLine->stripping($inFileContent); //преобразуем содержимое файла в массив
     //echo "Содержимое файла по строкам в массиве:\n"; var_dump($contentInArray); echo "\n";
 //======================================
@@ -105,7 +105,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     echo "-------------------------------------------------\n";
   }
   else {
-    //проверяем, файл ли
+    //размер нулевой, проверяем, файл или директория
     $path->text = $sourceFiles[$i]['name'];
     $path->symbol = '/';
     $path->position = 'END';
@@ -114,6 +114,13 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       echo "Это файл нулевой длины!\n";
       echo $sourceFiles[$i]['name'] . "\n";
       echo "-------------------------------------------------\n";
+
+//ЭТО ВСТАВКА, ДЛЯ СОЗДАНИЯ ПУСТЫХ ФАЙЛОВ, ХЕРНЯ, МОЖНО УДАЛИТЬ ЕСЛИ ЧТО.      
+//извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
+      $outFilePath = $outDir . "/" . mb_substr($sourceFiles[$i]['name'], $lenghtInPrefixPath + 1);
+      echo "Путь целевого файла " . $outFilePath . "\n";
+      $targetFile = fopen($outFilePath, 'a') or die("can't open file"); //создаём, пусть будет?
+      fclose($targetFile); //закрываем
     }
     else {
       // если же директория
@@ -124,5 +131,6 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       echo "-------------------------------------------------\n";
     }
   }
+  unset($currentFileName);  // на всякий случай прибиваем имя текущего файла.
 }
 
