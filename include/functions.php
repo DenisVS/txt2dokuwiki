@@ -70,7 +70,7 @@ function getFileList($dir, $recurse = FALSE, $depth = FALSE, $hidden = FALSE) {
  * @param string $endEntry Конечное вхождение
  * @param boolean $includeStart Устарело
  * @param boolean $includeEnd Устарело
- * @return text Текст на выходе
+ * @return string Текст на выходе
  * @todo Разобраться с устаревшими параметрами
  */
 function truncateText($text, $startEntry, $endEntry, $includeStart = FALSE, $includeEnd = FALSE) {

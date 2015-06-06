@@ -54,25 +54,26 @@ echo "LOOK: ".$currentFileNameFromRoot."\n";
   if ($sourceFiles[$i]['size'] > 0) {
     echo "Размер > 0!\n";
     echo "Обрабатывается " . $sourceFiles[$i]['name'] . "\n";
-
-    $baseName = pathinfo($sourceFiles[$i]['name'], PATHINFO_BASENAME); // файл без пути
-    $extension = pathinfo($sourceFiles[$i]['name'], PATHINFO_EXTENSION); //расширение отдельно
-    $filename = pathinfo($sourceFiles[$i]['name'], PATHINFO_FILENAME); //расширение отдельно
-    //если без расширения, определить тип
-    if ($extension == '') {
-      $filetype = trim(shell_exec('/usr/bin/file -i ' . $sourceFiles[$i]['name'] . ' | /usr/bin/awk \'{print $2}\'')) . "\n";
-      echo $sourceFiles[$i]['name'] . " FILETYPE: " . $filetype . "\n";
-    }
-    //если без имени, но с расширением
-    if ($extension != '' && $filename == '') {
-      echo "NONAME: " . $sourceFiles[$i]['name'] . "\n";
-    }
-
-    $inFileContent = file_get_contents($sourceFiles[$i]['name']); // дёргаем контент целиком
+//================ БЛОК РАЗБОРА ТИПОВ ФАЙЛОВ ===================
+//    $baseName = pathinfo($sourceFiles[$i]['name'], PATHINFO_BASENAME); // файл без пути
+//    $extension = pathinfo($sourceFiles[$i]['name'], PATHINFO_EXTENSION); //расширение отдельно
+//    $filename = pathinfo($sourceFiles[$i]['name'], PATHINFO_FILENAME); //расширение отдельно
+//    //если без расширения, определить тип
+//    if ($extension == '') {
+//      $filetype = trim(shell_exec('/usr/bin/file -i ' . $sourceFiles[$i]['name'] . ' | /usr/bin/awk \'{print $2}\'')) . "\n";
+//      echo $sourceFiles[$i]['name'] . " FILETYPE: " . $filetype . "\n";
+//    }
+//    //если без имени, но с расширением
+//    if ($extension != '' && $filename == '') {
+//      echo "NONAME: " . $sourceFiles[$i]['name'] . "\n";
+//    }
+//=====================================
+    
+    $inFileContent = file_get_contents($currentFileNameFromRoot); // дёргаем контент целиком
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
     $contentInArray = $LineByLine->stripping($inFileContent); //преобразуем содержимое файла в массив
     //echo "Содержимое файла по строкам в массиве:\n"; var_dump($contentInArray); echo "\n";
-//======================================
+//===================== НАЧИНАЕМ РАЗБИРАТЬ КОНТЕНТ =================
 //    unset($asterisksStrings);
 //    foreach ($contentInArray as $key => $val) {
 //      //$dcdc = $val;
@@ -90,7 +91,7 @@ echo "LOOK: ".$currentFileNameFromRoot."\n";
 //      $maxElement = max($asterisksStrings);
 //      //echo 'Минимальное и максимальное значение: ' . $minElement . "  " . $maxElement . "\n";
 //    }
-//======================================
+//====================== НИЖЕ СОБИРАЕМ ФАЙЛ И ПИШЕМ ================
     $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
     //echo 'Текущий файл: ' . $currentFileName . "\n";
