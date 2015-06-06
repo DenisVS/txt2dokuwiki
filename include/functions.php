@@ -1,9 +1,10 @@
 <?php
+
 /**
- *@file Функции
+ * @file Функции
  * 
  */
-    
+
 /**
  *  Сканирование директорий и получение списка объектов
  * @param string $dir Директория для сканирования
@@ -19,7 +20,7 @@
  * @return array(string|int|int)[]  $retval (See above)
  * 
  *  */
-function getFileList($dir, $recurse = FALSE, $depth = FALSE, $hidden = FALSE) {  
+function getFileList($dir, $recurse = FALSE, $depth = FALSE, $hidden = FALSE) {
   // массив, хранящий возвращаемое значение
   $retval = array();
 
@@ -109,7 +110,6 @@ function truncateText($text, $startEntry, $endEntry, $includeStart = FALSE, $inc
   return $result;
 }
 
-
 /**
  *
  * Функция вырезания текста по вхождениям
@@ -131,24 +131,23 @@ function removeExcess($text, $startEntry, $endEntry) {
   }
   $contentHead = mb_substr($text, 0, $positionStart);
 
-  
+
   $contentTail = mb_substr($text, $positionStart);
-  
+
   $tailLenght = mb_strlen($contentTail);
   if ($endEntry == NULL) {
-    $positionEnd = $tailLenght;  
+    $positionEnd = $tailLenght;
   }
   else {
     //$positionStart = mb_strpos($text, $startEntry) + $lenghtStartEntry;
     $positionEnd = mb_strpos($contentTail, $endEntry);
   }
-  $contentTail = mb_substr($contentTail, $positionEnd+$lenghtEndEntry);
-  
-  
-  $result = $contentHead.$contentTail;
+  $contentTail = mb_substr($contentTail, $positionEnd + $lenghtEndEntry);
+
+
+  $result = $contentHead . $contentTail;
   return $result;
 }
-
 
 /**
  * Функция проверки наличия слэша в конце строки
@@ -162,5 +161,12 @@ function checkingForSlash($text) {
   }
   else {
     return TRUE;
-    }
+  }
+}
+
+function createDir($path) {
+  if (!file_exists($path)) {
+    echo 'Создаваемая директория ' . $path . "\n";
+    mkdir($path, 0755, true); // создаём директорию
+  }
 }
