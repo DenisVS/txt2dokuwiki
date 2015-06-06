@@ -48,31 +48,29 @@ $sourceFiles = (getFileList($inDir, TRUE, FALSE, TRUE)); // получаем л�
 var_dump($sourceFiles);
 //цикл перебора массива файлов
 for ($i = 0; $i < count($sourceFiles); $i++) {
+  echo "Обрабатывается " . $sourceFiles[$i]['name'] . "\n";
   //================ Блок определения параметров URL из пути
   $baseName = pathinfo($sourceFiles[$i]['name'], PATHINFO_BASENAME); // файл без пути
-  $extension = pathinfo($sourceFiles[$i]['name'], PATHINFO_EXTENSION); //расширение отдельно
   $filename = pathinfo($sourceFiles[$i]['name'], PATHINFO_FILENAME); //расширение отдельно
-  //================ БЛОК РАЗБОРА ТИПОВ ФАЙЛОВ ===================
-  //если без расширения, определить тип
-  if ($extension == '') {
-    $filetype = trim(shell_exec('/usr/bin/file -i ' . $sourceFiles[$i]['name'] . ' | /usr/bin/awk \'{print $2}\'')) . "\n";
-    echo $sourceFiles[$i]['name'] . " FILETYPE: " . $filetype . "\n";
-  }
-  //если без имени, но с расширением
-  if ($extension != '' && $filename == '') {
-    echo "NONAME: " . $sourceFiles[$i]['name'] . "\n";
-  }
-//=====================================
 
 
   $currentFileNameFromRoot = $sourceFiles[$i]['name'];  //фиксируем имя текущего файла
-  echo "LOOK: " . $currentFileNameFromRoot . "\n";
   $currentFileNameInsideDir = mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1); // полный путь текущего файла внутри обрабатываемой директории (inDir)
-//Если файл непустой файлов 
+  //Если файл непустой 
   if ($sourceFiles[$i]['size'] > 0) {
     echo "Размер > 0!\n";
-    echo "Обрабатывается " . $sourceFiles[$i]['name'] . "\n";
-
+    $extension = pathinfo($sourceFiles[$i]['name'], PATHINFO_EXTENSION); //расширение отдельно
+    //================ БЛОК РАЗБОРА ТИПОВ ФАЙЛОВ ===================
+    //если без расширения, определить тип
+    if ($extension == '') {
+      $filetype = trim(shell_exec('/usr/bin/file -i ' . $sourceFiles[$i]['name'] . ' | /usr/bin/awk \'{print $2}\'')) . "\n";
+      echo $sourceFiles[$i]['name'] . " FILETYPE: " . $filetype . "\n";
+    }
+    //если без имени, но с расширением
+    if ($extension != '' && $filename == '') {
+      echo "NONAME: " . $sourceFiles[$i]['name'] . "\n";
+    }
+    //=====================================
 
     $inFileContent = file_get_contents($currentFileNameFromRoot); // дёргаем контент целиком
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
@@ -126,7 +124,6 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
 //        }
 //      }
 //    }
-
 //====================== НИЖЕ СОБИРАЕМ ФАЙЛ И ПИШЕМ ================
     $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
     //echo "Содержимое файла целиком:\n".$contentInFile."\n";
@@ -142,28 +139,28 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     echo "-------------------------------------------------\n";
   }
   else {
+    echo "Размер = 0!\n";
     //размер нулевой, проверяем, файл или директория
     $path->text = $currentFileNameFromRoot;
     $path->symbol = '/';
     $path->position = 'END';
     $isItDir = $path->checkingForSymbol();
     if ($isItDir == FALSE) {
-      echo "Это файл нулевой длины!\n";
-      echo $currentFileNameFromRoot . "\n";
-      echo "-------------------------------------------------\n";
+      echo "Файл нулевой длины " . $currentFileNameFromRoot . "\n";
 
-//ЭТО ВСТАВКА, ДЛЯ СОЗДАНИЯ ПУСТЫХ ФАЙЛОВ.      
-//извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
-      $outFilePath = $outDir . "/" . $currentFileNameInsideDir;
+      //ЭТО ВСТАВКА, ДЛЯ СОЗДАНИЯ ПУСТЫХ ФАЙЛОВ.      
+      $outFilePath = $outDir . "/" . $currentFileNameInsideDir; //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
       echo "Путь целевого файла " . $outFilePath . "\n";
       $targetFile = fopen($outFilePath, 'a') or die("can't open file"); //создаём, пусть будет?
       fclose($targetFile); //закрываем
+      //конец вставки
+      echo "-------------------------------------------------\n";
     }
     else {
       // если же директория
-      echo 'Директория на входе ' . $currentFileNameFromRoot . "\n";
+      echo 'Копируемая директория ' . $currentFileNameFromRoot . "\n";
       $outDirPath = $outDir . "/" . $currentFileNameInsideDir;
-      echo 'Директория на выходе ' . $outDirPath . "\n";
+      echo 'Скопированная директория ' . $outDirPath . "\n";
       mkdir($outDirPath, 0755, true); // создаём директорию
       echo "-------------------------------------------------\n";
     }
