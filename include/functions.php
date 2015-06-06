@@ -10,7 +10,14 @@
  * @param boolean $recurse Рекурсивнаое сканирование
  * @param int $depth Глубина (false = без ограничений)
  * @param boolean $hidden Учитывать скрытые файлы (с точки). По умолчанию FALSE
- * @return array Массив директорий и признаков
+ * 
+ * array['fields']  
+ *  [fieldName] 
+ *    ['name'] путь к файлу от текущего уровня
+ *    ['size'] размер файла (диретории) в байтах
+ *    ['lastmod'] время последней модификации файла(директории) в UNIXTIME
+ * @return array(string|int|int)[]  $retval (See above)
+ * 
  *  */
 function getFileList($dir, $recurse = FALSE, $depth = FALSE, $hidden = FALSE) {  
   // массив, хранящий возвращаемое значение

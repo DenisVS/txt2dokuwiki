@@ -48,8 +48,9 @@ $sourceFiles = (getFileList($inDir, TRUE, FALSE, TRUE)); // получаем л�
 var_dump($sourceFiles);
 //цикл перебора массива файлов
 for ($i = 0; $i < count($sourceFiles); $i++) {
-  $currentFileName = $sourceFiles[$i]['name'];  //фиксируем имя текущего файла
-  //Если файл непустой файлов 
+  $currentFileNameFromRoot = $sourceFiles[$i]['name'];  //фиксируем имя текущего файла
+echo "LOOK: ".$currentFileNameFromRoot."\n";  
+//Если файл непустой файлов 
   if ($sourceFiles[$i]['size'] > 0) {
     echo "Размер > 0!\n";
     echo "Обрабатывается " . $sourceFiles[$i]['name'] . "\n";
@@ -95,7 +96,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     //echo 'Текущий файл: ' . $currentFileName . "\n";
     echo 'Длина пути к файлу ' . $lenghtInPrefixPath . "\n";
     //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
-    $outFilePath = $outDir . "/" . mb_substr($currentFileName, $lenghtInPrefixPath + 1);
+    $outFilePath = $outDir . "/" . mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1);
     echo "Путь целевого файла " . $outFilePath . "\n";
 
     $targetFile = fopen($outFilePath, 'a') or die("can't open file");
@@ -106,31 +107,31 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   }
   else {
     //размер нулевой, проверяем, файл или директория
-    $path->text = $currentFileName;
+    $path->text = $currentFileNameFromRoot;
     $path->symbol = '/';
     $path->position = 'END';
     $isItDir = $path->checkingForSymbol();
     if ($isItDir == FALSE) {
       echo "Это файл нулевой длины!\n";
-      echo $currentFileName . "\n";
+      echo $currentFileNameFromRoot . "\n";
       echo "-------------------------------------------------\n";
 
-//ЭТО ВСТАВКА, ДЛЯ СОЗДАНИЯ ПУСТЫХ ФАЙЛОВ, ХЕРНЯ, МОЖНО УДАЛИТЬ ЕСЛИ ЧТО.      
+//ЭТО ВСТАВКА, ДЛЯ СОЗДАНИЯ ПУСТЫХ ФАЙЛОВ.      
 //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
-      $outFilePath = $outDir . "/" . mb_substr($currentFileName, $lenghtInPrefixPath + 1);
+      $outFilePath = $outDir . "/" . mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1);
       echo "Путь целевого файла " . $outFilePath . "\n";
       $targetFile = fopen($outFilePath, 'a') or die("can't open file"); //создаём, пусть будет?
       fclose($targetFile); //закрываем
     }
     else {
       // если же директория
-      echo 'Директория на входе ' . $currentFileName . "\n";
-      $outDirPath = $outDir . "/" . mb_substr($currentFileName, $lenghtInPrefixPath + 1);
+      echo 'Директория на входе ' . $currentFileNameFromRoot . "\n";
+      $outDirPath = $outDir . "/" . mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1);
       echo 'Директория на выходе ' . $outDirPath . "\n";
       mkdir($outDirPath, 0755, true); // создаём директорию
       echo "-------------------------------------------------\n";
     }
   }
-  unset($currentFileName);  // на всякий случай прибиваем имя текущего файла.
+  unset($currentFileNameFromRoot);  // на всякий случай прибиваем имя текущего файла.
 }
 
