@@ -52,6 +52,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   //================ Блок определения параметров URL из пути
   $baseName = pathinfo($sourceFiles[$i]['name'], PATHINFO_BASENAME); // файл без пути
   $filename = pathinfo($sourceFiles[$i]['name'], PATHINFO_FILENAME); //расширение отдельно
+  $extension = pathinfo($sourceFiles[$i]['name'], PATHINFO_EXTENSION); //расширение отдельно
 
 
   $currentFileNameFromRoot = $sourceFiles[$i]['name'];  //фиксируем имя текущего файла
@@ -59,7 +60,6 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   //Если файл непустой 
   if ($sourceFiles[$i]['size'] > 0) {
     echo "Размер > 0!\n";
-    $extension = pathinfo($sourceFiles[$i]['name'], PATHINFO_EXTENSION); //расширение отдельно
     //================ БЛОК РАЗБОРА ТИПОВ ФАЙЛОВ ===================
     //если без расширения, определить тип
     if ($extension == '') {
@@ -146,8 +146,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     $path->position = 'END';
     $isItDir = $path->checkingForSymbol();
     if ($isItDir == FALSE) {
-      echo "Файл нулевой длины " . $currentFileNameFromRoot . "\n";
-
+      echo "Копируемый файл нулевой длины " . $currentFileNameFromRoot . "\n";
       //ЭТО ВСТАВКА, ДЛЯ СОЗДАНИЯ ПУСТЫХ ФАЙЛОВ.      
       $outFilePath = $outDir . "/" . $currentFileNameInsideDir; //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
       echo "Путь целевого файла " . $outFilePath . "\n";
