@@ -117,8 +117,12 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         }
       }
 
+
+
+
+      
       if ($header == FALSE && isset($contentInArray[1])) {
-        if (trim($contentInArray[0]) != FALSE && trim($contentInArray[1]) == FALSE) {
+        if ((strpos($contentInArray[0], '/') === false) && trim($contentInArray[0]) != FALSE && trim($contentInArray[1]) == FALSE) {
           //@todo Условие отсутствия лишних символов / \ 
           echo 'Это первая строка: ' . $contentInArray[0] . "\n";
           $header = $contentInArray[0];
