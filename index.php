@@ -96,19 +96,16 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       //== РАЗБОР МАССИВА С КОНТЕНТОМ ПОСТРОЧНО. АНАЛИЗИРУЕМ.
       foreach ($contentInArray as $key => $val) {
         $asterisksStrings[] = lenghtEntryAsterisks($val); //загоняем в массив количество звёзд в начале строки
-        $sss = manStyle($val);
-        if ($sss == TRUE && $key < 2) {
+        if (manStyle($val) == TRUE && $key < 2) {
           $header = $val;
         }
       }
       $analysysOfAstarisks = minMaxValues($asterisksStrings);
-      //==/КОНЕЦ БЛОКА
-
-      //      //
+      //==/КОНЕЦ РАЗБОРА МАССИВА С КОНТЕНТОМ
+      //      
+      //      
+      //      
       ////============      // разберёмся с соотношениями количеств звёзд
-      //if ($schitatZvezdy == TRUE) {
-      //а теперь подсчитываем количество максимальных значений звёздочек
-      //$coutMaxAsterisk = coutMaxValues($asterisksStrings);
       if ($header == FALSE) {
         echo 'Количество максимумов ' . $analysysOfAstarisks['max']['amount'] . "\n";
 
@@ -117,15 +114,24 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
           //echo "Звёздочки в максимальном количестве не заголовок, их " . $coutMaxAsterisk . "!\n";
           $header = $contentInArray[$analysysOfAstarisks['indexes'][0]] . "\n";
           echo 'Строка заголовка ' . $analysysOfAstarisks['indexes'][0] . "\n";
-          $headerPresent = FALSE; // Много звездатых, заголовком не пахнет.
+        }
+      }
+
+      if ($header == FALSE && isset($contentInArray[1])) {
+        if (trim($contentInArray[0]) != FALSE && trim($contentInArray[1]) == FALSE) {
+          //@todo Условие отсутствия лишних символов / \ 
+          echo 'Это первая строка: ' . $contentInArray[0] . "\n";
+          $header = $contentInArray[0];
         }
       }
 
 
-
-
-      if (isset($header)) {
-        echo 'Заголовок: "' . $header . '" в строке ' . "\n";
+      //if (isset($header)) {
+      if ($header != FALSE) {
+        echo 'Заголовок: "' . $header . '"  ' . "\n";
+      }
+      else {
+        echo 'Заголовка нет!' . "\n";
       }
 //====================== НИЖЕ СОБИРАЕМ ФАЙЛ И ПИШЕМ ================
       $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
