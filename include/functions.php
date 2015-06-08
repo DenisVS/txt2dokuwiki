@@ -170,3 +170,44 @@ function createDir($path) {
     mkdir($path, 0755, true); // создаём директорию
   }
 }
+
+function minMaxValues($array) {
+  $count['max']['value'] = max($array);
+  $count['min']['value'] = min($array);
+  echo 'Минимальное значение: ' . $count['min']['value'] . "\n";
+  echo 'Максимальное значение: ' . $count['max']['value'] . "\n";
+  //exit();
+  $count['max']['amount'] = 0;
+  $count['min']['amount'] = 0;
+  foreach ($array as $key => $val) {
+    if ($count['max']['value'] == $val) {
+      $count['indexes'][] = $key;
+      $count['max']['amount']++; //считаем, сколько ключей с максимальным значением
+    }
+  }
+  foreach ($array as $key => $val) {
+    if ($count['max']['value'] == $val) {
+      $count['indexes'][] = $key;
+      $count['min']['amount']++; //считаем, сколько ключей с минимальным значением
+    }
+  }
+  return $count;
+}
+
+function lenghtEntryAsterisks($param) {
+  $asteriskLenght = 0;
+  //извлекаем все строки со звёздочками, содержащие текст
+  if (preg_match('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', $param)) {
+    $asterisksBefore = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', '$1', $param));
+    $asteriskLenght = (int) strlen($asterisksBefore); //длина "одни звёздочки" в цифрах
+  }
+  return $asteriskLenght;
+}
+
+function manStyle($param) {
+  if (preg_match('/(.*)\S\s--\s\S(.*)\z/m', $param)) {
+    return TRUE;
+  }  else {
+    return FALSE;  
+  }
+}

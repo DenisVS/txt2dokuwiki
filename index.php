@@ -91,52 +91,41 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
 //===================== НАЧИНАЕМ РАЗБИРАТЬ КОНТЕНТ =================
       unset($asterisksStrings);
       unset($headerPresent);
+      $header = FALSE;
+
+      //== РАЗБОР МАССИВА С КОНТЕНТОМ ПОСТРОЧНО. АНАЛИЗИРУЕМ.
       foreach ($contentInArray as $key => $val) {
-
-        //извлекаем все строки со звёздочками, содержащие текст
-        if (preg_match('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', $val)) {
-          if ($key < 2) {
-            $headerPresent = TRUE; //Заголовок есть!
-          }
-
-          $asterisksBefore = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', '$1', $val));
-          //echo "String: " . $val . "\n"; //выводим строку со звёздочками
-          $asteriskLenght = (int) strlen($asterisksBefore); //длина "одни звёздочки" в цифрах
-          //echo "Lenght: " . $asteriskLenght . ". Asterisks: " . $asterisksBefore . "\n"; //выводим длину "одни звёздочки"
-          $asterisksStrings[] = $asteriskLenght;
-        }
-        $schitatZvezdy = TRUE;  //Далее, определяется гарантированный заголовок "слова -- слова"
-        if (preg_match('/(.*)\S\s--\s\S(.*)\z/m', $val) && ($key < 1)) {
-          $headerPresent = TRUE;  // но если в формате man, то точно есть!
-          $schitatZvezdy = FALSE; // И количество максимумов звёзд не считаем, ибо это заголовок!
-          echo $currentFileNameFromRoot . " в формате man\n";
+        $asterisksStrings[] = lenghtEntryAsterisks($val); //загоняем в массив количество звёзд в начале строки
+        $sss = manStyle($val);
+        if ($sss == TRUE && $key < 2) {
+          $header = $val;
         }
       }
-      // Если звёзды есть, разберёмся с соотношениями количеств
-      if (isset($asterisksStrings)) {
-        $minElement = min($asterisksStrings);
-        $maxElement = max($asterisksStrings);
-        //var_dump($asterisksStrings);
-        echo 'Минимальное и максимальное значение: ' . $minElement . "  " . $maxElement . "\n";
-        //exit();
+      $analysysOfAstarisks = minMaxValues($asterisksStrings);
+      //==/КОНЕЦ БЛОКА
+
+      //      //
+      ////============      // разберёмся с соотношениями количеств звёзд
+      //if ($schitatZvezdy == TRUE) {
+      //а теперь подсчитываем количество максимальных значений звёздочек
+      //$coutMaxAsterisk = coutMaxValues($asterisksStrings);
+      if ($header == FALSE) {
+        echo 'Количество максимумов ' . $analysysOfAstarisks['max']['amount'] . "\n";
+
+        if (max($asterisksStrings) > 0 && $analysysOfAstarisks['max']['amount'] == 1 && $analysysOfAstarisks['indexes'][0] < 2) {
+          //var_dump($countsOfArray);
+          //echo "Звёздочки в максимальном количестве не заголовок, их " . $coutMaxAsterisk . "!\n";
+          $header = $contentInArray[$analysysOfAstarisks['indexes'][0]] . "\n";
+          echo 'Строка заголовка ' . $analysysOfAstarisks['indexes'][0] . "\n";
+          $headerPresent = FALSE; // Много звездатых, заголовком не пахнет.
+        }
+      }
 
 
-        if ($schitatZvezdy == TRUE) {
-          //а теперь подсчитываем количество максимальных значений звёздочек
-          $coutMaxAsterisk = 0;
-          foreach ($asterisksStrings as $key => $val) {
-            if ($maxElement == $val) {
-              $coutMaxAsterisk++; //считаем, сколько их, с максимальным количеством звёзд
-            }
-          }
-          if ($coutMaxAsterisk > 1) {
-            echo "Эти звёздочки в максимальном количестве не заголовок, вхождений аж " . $coutMaxAsterisk . "!\n";
-            $headerPresent = FALSE; //А вот и нет!
-          }
-        }
-        else {
-          echo "Вычисляем заголовок по другим признакам\n";  //Вычисляем заголовок по другим признакам
-        }
+
+
+      if (isset($header)) {
+        echo 'Заголовок: "' . $header . '" в строке ' . "\n";
       }
 //====================== НИЖЕ СОБИРАЕМ ФАЙЛ И ПИШЕМ ================
       $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
