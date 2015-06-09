@@ -93,7 +93,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       unset($headerPresent);
       $header = FALSE;
 
-      //== РАЗБОР МАССИВА С КОНТЕНТОМ ПОСТРОЧНО. АНАЛИЗИРУЕМ.
+      //== РАЗБОР МАССИВА С КОНТЕНТОМ ПОСТРОЧНО. КОЛИЧЕСТВО ЗВЁЗД В КАЖДОЙ СТРОКЕ.
       foreach ($contentInArray as $key => $val) {
         $asterisksStrings[] = lenghtEntryAsterisks($val); //загоняем в массив количество звёзд в начале строки
         if (manStyle($val) == TRUE && $key < 2) {
@@ -102,12 +102,13 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       }
       $analysysOfAstarisks = minMaxValues($asterisksStrings);
       //var_dump($analysysOfAstarisks);
+      //var_dump($asterisksStrings);
       //==/КОНЕЦ РАЗБОРА МАССИВА С КОНТЕНТОМ
       //      
       //      
       //      
       ////============      // разберёмся с соотношениями количеств звёзд
-      echo 'MIN: '.$analysysOfAstarisks['min']['value']."\n";
+      //echo 'MIN: '.$analysysOfAstarisks['min']['value']."\n";
       if ($header == FALSE) {
         echo 'Количество максимумов ' . $analysysOfAstarisks['max']['quantity'] . "\n";
 
@@ -120,7 +121,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         }
       }
 
-      // если нет заголовка и есть 1 строка
+      // если нет заголовка и есть 1-я строка
       if ($header == FALSE && isset($contentInArray[1])) {
         //если нет / * и 0 строка с содержимым и 1 строка пустая
         if ((strpos($contentInArray[0], '*') === false) && (strpos($contentInArray[0], '/') === false) && trim($contentInArray[0]) != FALSE && trim($contentInArray[1]) == FALSE) {
@@ -139,12 +140,39 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
 
       echo 'Заголовок: "' . $header . '"  ' . "\n";
       array_unshift($contentInArray, '====== ' . $header . ' ======'); // вначале вставляем заголовок
-      
       //var_dump($contentInArray);
       $contentInArray = insertCherezOdin($contentInArray); // разреживаем контент черезстрочно
       //var_dump($contentInArray);
+//      
+//== РАЗБОР МАССИВА С КОНТЕНТОМ ПОСТРОЧНО. КОЛИЧЕСТВО ЗВЁЗД В КАЖДОЙ СТРОКЕ ПОСЛЕ ПОДМЕНЫ ПЕРВОЙ СТРОКИ.
+// В этом блоке делаем массив с количеством звёзд по убыванию
+      unset($asterisksStrings);
+      foreach ($contentInArray as $key => $val) {
+        $asterisksStrings[] = lenghtEntryAsterisks($val); //загоняем в массив количество звёзд в начале строки
+      }
 
+      //очистка от пустых строк (использовать вместе!)
+      $asterisksStrings = array_filter($asterisksStrings);
+      sort($asterisksStrings);
+      $asterisksStrings = array_unique($asterisksStrings); //уникализируем значения
+      //var_dump($asterisksStrings);
 
+// теперь делаем массив размером 5, по количеству уровней после главного заголовка      
+      while (count($asterisksStrings) < 6) {
+        $asterisksStrings[] = 0;
+      }
+      sort($asterisksStrings); //сортируем массив
+      $asterisksStrings = array_flip($asterisksStrings); //меняем ключи со значениями 
+      var_dump($asterisksStrings);
+replaceAsterisksToEqual($contentInArray, $asterisksStrings);
+      //==/КОНЕЦ РАЗБОРА МАССИВА С КОНТЕНТОМ. На выходе массив ключ = звёзды, значение = равенства
+      //
+     //
+     //
+     //
+ 
+      
+     // var_dump(replaceAsterisksToEqualAndLenght($contentInArray));
 //====================== НИЖЕ СОБИРАЕМ ФАЙЛ И ПИШЕМ ================
       $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
       //echo "Содержимое файла целиком:\n".$contentInFile."\n";

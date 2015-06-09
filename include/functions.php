@@ -183,7 +183,7 @@ function minMaxValues($array, $zero = NULL) {
       }
     }
   }
-  var_dump($array);
+  //var_dump($array);
   echo 'Минимальное значение: ' . $count['min']['value'] . "\n";
   echo 'Максимальное значение: ' . $count['max']['value'] . "\n";
   $count['max']['quantity'] = 0;
@@ -211,6 +211,35 @@ function lenghtEntryAsterisks($param) {
     $asteriskLenght = (int) strlen($asterisksBefore); //длина "одни звёздочки" в цифрах
   }
   return $asteriskLenght;
+}
+
+/**
+ * Функция замены строки со звёздочками на чистую строку
+ * @param type $string
+ * @return type
+ */
+function replaceAsterisksToEqual($inFileArray, $asterisksAndEqual) {
+  foreach ($inFileArray as $string) {
+
+    // если строки со звёздочками, содержащие текст
+    if (preg_match('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', $string)) {
+      
+      $asterisksBefore = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', '$1', $string));
+      $asteriskLenght = (int) strlen($asterisksBefore); //длина "одни звёздочки" в цифрах
+      $string = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/m', '$4$5', $string));
+     
+      $equalsLenght = $asterisksAndEqual[$asteriskLenght]; // выборка  из массива
+       echo $asteriskLenght." ------------ ".  $equalsLenght."\n";
+//формируем значки равенства
+      $equals = '';
+      for ($index = 0; $index < $equalsLenght; $index++) {
+        $equals .= '=';
+      }
+
+      echo $equals . " EQ\n";
+    }
+  }
+  //return $out;
 }
 
 function manStyle($param) {
