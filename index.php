@@ -101,18 +101,20 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         }
       }
       $analysysOfAstarisks = minMaxValues($asterisksStrings);
+      //var_dump($analysysOfAstarisks);
       //==/КОНЕЦ РАЗБОРА МАССИВА С КОНТЕНТОМ
       //      
       //      
       //      
       ////============      // разберёмся с соотношениями количеств звёзд
+      echo 'MIN: '.$analysysOfAstarisks['min']['value']."\n";
       if ($header == FALSE) {
-        echo 'Количество максимумов ' . $analysysOfAstarisks['max']['amount'] . "\n";
+        echo 'Количество максимумов ' . $analysysOfAstarisks['max']['quantity'] . "\n";
 
-        if (max($asterisksStrings) > 0 && $analysysOfAstarisks['max']['amount'] == 1 && $analysysOfAstarisks['indexes'][0] < 2) {
+        if (max($asterisksStrings) > 0 && $analysysOfAstarisks['max']['quantity'] == 1 && $analysysOfAstarisks['max_indexes'][0] < 2) {
           //echo "Звёздочки в максимальном количестве не заголовок, их " . $coutMaxAsterisk . "!\n";
-          $header = preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/m', '$4$5', trim($contentInArray[$analysysOfAstarisks['indexes'][0]])); //обрубаем звёздочки у заголовка
-          $numHeaderString = $analysysOfAstarisks['indexes'][0];
+          $header = preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/m', '$4$5', trim($contentInArray[$analysysOfAstarisks['max_indexes'][0]])); //обрубаем звёздочки у заголовка
+          $numHeaderString = $analysysOfAstarisks['max_indexes'][0];
           echo 'Строка заголовка ' . $numHeaderString . "\n";
           unset($contentInArray[$numHeaderString]); // Убиваем строку с заголовком
         }

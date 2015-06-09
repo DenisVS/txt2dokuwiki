@@ -171,24 +171,33 @@ function createDir($path) {
   }
 }
 
-function minMaxValues($array) {
-  $count['max']['value'] = max($array);
+function minMaxValues($array, $zero = NULL) {
   $count['min']['value'] = min($array);
+  $count['max']['value'] = max($array);
+  //Учитывать ли нули
+  if ($zero == NULL) {
+    $count['min']['value'] = max($array);
+    foreach ($array as $key => $value) {
+      if ($value < $count['min']['value'] && $value != 0) {
+        $count['min']['value'] = $value;
+      }
+    }
+  }
+  var_dump($array);
   echo 'Минимальное значение: ' . $count['min']['value'] . "\n";
   echo 'Максимальное значение: ' . $count['max']['value'] . "\n";
-  //exit();
-  $count['max']['amount'] = 0;
-  $count['min']['amount'] = 0;
+  $count['max']['quantity'] = 0;
+  $count['min']['quantity'] = 0;
   foreach ($array as $key => $val) {
     if ($count['max']['value'] == $val) {
-      $count['indexes'][] = $key;
-      $count['max']['amount'] ++; //считаем, сколько ключей с максимальным значением
+      $count['max_indexes'][] = $key;
+      $count['max']['quantity'] ++; //считаем, сколько ключей с максимальным значением
     }
   }
   foreach ($array as $key => $val) {
-    if ($count['max']['value'] == $val) {
-      $count['indexes'][] = $key;
-      $count['min']['amount'] ++; //считаем, сколько ключей с минимальным значением
+    if ($count['min']['value'] == $val) {
+      $count['min_indexes'][] = $key;
+      $count['min']['quantity'] ++; //считаем, сколько ключей с минимальным значением
     }
   }
   return $count;
