@@ -182,13 +182,13 @@ function minMaxValues($array) {
   foreach ($array as $key => $val) {
     if ($count['max']['value'] == $val) {
       $count['indexes'][] = $key;
-      $count['max']['amount']++; //считаем, сколько ключей с максимальным значением
+      $count['max']['amount'] ++; //считаем, сколько ключей с максимальным значением
     }
   }
   foreach ($array as $key => $val) {
     if ($count['max']['value'] == $val) {
       $count['indexes'][] = $key;
-      $count['min']['amount']++; //считаем, сколько ключей с минимальным значением
+      $count['min']['amount'] ++; //считаем, сколько ключей с минимальным значением
     }
   }
   return $count;
@@ -207,7 +207,44 @@ function lenghtEntryAsterisks($param) {
 function manStyle($param) {
   if (preg_match('/(.*)\S\s--\s\S(.*)\z/m', $param)) {
     return TRUE;
-  }  else {
-    return FALSE;  
   }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Аналог str_replace для мультибайтных строк
+ * @param string $needle Вхождение
+ * @param string $replacement Замена
+ * @param string $haystack Строка на входе
+ * @return string Строка на выходе
+ */
+function mb_str_replace($needle, $replacement, $haystack) {
+  $needle_len = mb_strlen($needle);
+  $replacement_len = mb_strlen($replacement);
+  $pos = mb_strpos($haystack, $needle);
+  while ($pos !== false) {
+    $haystack = mb_substr($haystack, 0, $pos) . $replacement
+        . mb_substr($haystack, $pos + $needle_len);
+    $pos = mb_strpos($haystack, $needle, $pos + $replacement_len);
+  }
+  return $haystack;
+}
+
+/**
+ * Функция подъёма по директориям выше на заданное количество ступеней (слэшей). 
+ * Обрубает лишние низлежащие. Дефолтно 1 уровень.
+ * @param string $url Исходный URL
+ * @param int $level Уровень, на который надо подняться
+ * @return string Результирующий URL
+ */
+function dirUp($url, $level = 1) {
+  $i = 0;
+  do {
+    $pos = mb_strrpos($url, '/');
+    $url = mb_substr($url, 0, $pos);
+    $i++;
+  } while ($level > $i);
+  return $url;
 }

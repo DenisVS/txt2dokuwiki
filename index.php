@@ -73,9 +73,9 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   echo "Обрабатывается " . $sourceFiles[$i]['name'] . "\n";
   //================ Блок определения параметров URL из пути
   $baseName = pathinfo($sourceFiles[$i]['name'], PATHINFO_BASENAME); // файл без пути
-  $filename = pathinfo($sourceFiles[$i]['name'], PATHINFO_FILENAME); //расширение отдельно
+  $filename = pathinfo($sourceFiles[$i]['name'], PATHINFO_FILENAME); //имя отдельно
   $extension = pathinfo($sourceFiles[$i]['name'], PATHINFO_EXTENSION); //расширение отдельно
-
+  $updirName = pathinfo(dirUp($sourceFiles[$i]['name'], 1), PATHINFO_BASENAME); // вышележащая директория без пути
 
   $currentFileNameFromRoot = $sourceFiles[$i]['name'];  //фиксируем имя текущего файла
   $currentFileNameInsideDir = mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1); // полный путь текущего файла внутри обрабатываемой директории (inDir)
@@ -112,15 +112,15 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         if (max($asterisksStrings) > 0 && $analysysOfAstarisks['max']['amount'] == 1 && $analysysOfAstarisks['indexes'][0] < 2) {
           //var_dump($countsOfArray);
           //echo "Звёздочки в максимальном количестве не заголовок, их " . $coutMaxAsterisk . "!\n";
-          $header = $contentInArray[$analysysOfAstarisks['indexes'][0]] . "\n";
           echo 'Строка заголовка ' . $analysysOfAstarisks['indexes'][0] . "\n";
+          $header = $contentInArray[$analysysOfAstarisks['indexes'][0]] . "\n";
         }
       }
 
       // если нет заголовка и есть 1 строка
       if ($header == FALSE && isset($contentInArray[1])) {
         //если нет / и 0 строка с содержимым и 1 строка пустая
-        if ((strpos($contentInArray[0], '/') === false) && trim($contentInArray[0]) != FALSE && trim($contentInArray[1]) == FALSE) {
+        if ((strpos($contentInArray[0], '*') === false) && (strpos($contentInArray[0], '/') === false) && trim($contentInArray[0]) != FALSE && trim($contentInArray[1]) == FALSE) {
           //Условие отсутствия лишних символов / \ 
           echo 'Это первая строка: ' . $contentInArray[0] . "\n";
           $header = $contentInArray[0];
@@ -128,10 +128,13 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       }
 
       if ($header == FALSE) {
-      //todo заголовок из названия файла  
+        //todo заголовок из названия файла
+
+
+        $header = mb_str_replace('_', ' ', $updirName) . ' - ' . mb_str_replace('_', ' ', $filename);
       }
-      
-            
+
+
       //if (isset($header)) {
       if ($header != FALSE) {
         echo 'Заголовок: "' . $header . '"  ' . "\n";
