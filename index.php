@@ -110,36 +110,36 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         echo 'Количество максимумов ' . $analysysOfAstarisks['max']['amount'] . "\n";
 
         if (max($asterisksStrings) > 0 && $analysysOfAstarisks['max']['amount'] == 1 && $analysysOfAstarisks['indexes'][0] < 2) {
-          //var_dump($countsOfArray);
           //echo "Звёздочки в максимальном количестве не заголовок, их " . $coutMaxAsterisk . "!\n";
-          $header = preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/m', '$4$5', trim( $contentInArray[$analysysOfAstarisks['indexes'][0]])); //обрубаем звёздочки у заголовка
-          echo 'Строка заголовка ' . $analysysOfAstarisks['indexes'][0] . "\n";
-          //$header = $contentInArray[$analysysOfAstarisks['indexes'][0]] ;
+          $header = preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/m', '$4$5', trim($contentInArray[$analysysOfAstarisks['indexes'][0]])); //обрубаем звёздочки у заголовка
+          $numHeaderString = $analysysOfAstarisks['indexes'][0];
+          echo 'Строка заголовка ' . $numHeaderString . "\n";
+          unset($contentInArray[$numHeaderString]); // Убиваем строку с заголовком
         }
       }
 
       // если нет заголовка и есть 1 строка
       if ($header == FALSE && isset($contentInArray[1])) {
-        //если нет / и 0 строка с содержимым и 1 строка пустая
+        //если нет / * и 0 строка с содержимым и 1 строка пустая
         if ((strpos($contentInArray[0], '*') === false) && (strpos($contentInArray[0], '/') === false) && trim($contentInArray[0]) != FALSE && trim($contentInArray[1]) == FALSE) {
-          //Условие отсутствия лишних символов / \ 
           echo 'Это первая строка: ' . $contentInArray[0] . "\n";
           $header = $contentInArray[0];
+          $numHeaderString = 0;
+          echo 'Строка заголовка ' . $numHeaderString . "\n";
+          unset($contentInArray[0]); // Убиваем строку с заголовком
         }
       }
 
       if ($header == FALSE) {
-        $header = mb_str_replace('_', ' ', $updirName) . ' - ' . mb_str_replace('_', ' ', $filename);
+        $header = trim(mb_str_replace('_', ' ', $updirName) . ' - ' . mb_str_replace('_', ' ', $filename));
+        $numHeaderString = NULL;
       }
 
+      echo 'Заголовок: "' . $header . '"  ' . "\n";
+      array_unshift($contentInArray, '====== ' . $header . ' ======'); // вначале вставляем заголовок
 
-      //if (isset($header)) {
-      if ($header != FALSE) {
-        echo 'Заголовок: "' . $header . '"  ' . "\n";
-      }
-      else {
-        echo 'Заголовка нет!' . "\n";
-      }
+
+      var_dump($contentInArray);
 //====================== НИЖЕ СОБИРАЕМ ФАЙЛ И ПИШЕМ ================
       $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
       //echo "Содержимое файла целиком:\n".$contentInFile."\n";
