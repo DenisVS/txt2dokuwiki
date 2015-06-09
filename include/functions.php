@@ -220,26 +220,23 @@ function lenghtEntryAsterisks($param) {
  */
 function replaceAsterisksToEqual($inFileArray, $asterisksAndEqual) {
   foreach ($inFileArray as $string) {
-
     // если строки со звёздочками, содержащие текст
     if (preg_match('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', $string)) {
-      
       $asterisksBefore = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', '$1', $string));
       $asteriskLenght = (int) strlen($asterisksBefore); //длина "одни звёздочки" в цифрах
       $string = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/m', '$4$5', $string));
-     
       $equalsLenght = $asterisksAndEqual[$asteriskLenght]; // выборка  из массива
-       echo $asteriskLenght." ------------ ".  $equalsLenght."\n";
 //формируем значки равенства
       $equals = '';
       for ($index = 0; $index < $equalsLenght; $index++) {
         $equals .= '=';
       }
-
-      echo $equals . " EQ\n";
+      $string = $equals . ' ' . $string . ' ' . $equals;
+      echo $string . " EQ\n";
     }
+    $return[] = $string;
   }
-  //return $out;
+  return $return;
 }
 
 function manStyle($param) {

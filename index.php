@@ -144,8 +144,8 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       $contentInArray = insertCherezOdin($contentInArray); // разреживаем контент черезстрочно
       //var_dump($contentInArray);
 //      
-//== РАЗБОР МАССИВА С КОНТЕНТОМ ПОСТРОЧНО. КОЛИЧЕСТВО ЗВЁЗД В КАЖДОЙ СТРОКЕ ПОСЛЕ ПОДМЕНЫ ПЕРВОЙ СТРОКИ.
-// В этом блоке делаем массив с количеством звёзд по убыванию
+      //== РАЗБОР МАССИВА С КОНТЕНТОМ ПОСТРОЧНО. КОЛИЧЕСТВО ЗВЁЗД В КАЖДОЙ СТРОКЕ ПОСЛЕ ПОДМЕНЫ ПЕРВОЙ СТРОКИ.
+      // В этом блоке делаем массив с количеством звёзд по убыванию
       unset($asterisksStrings);
       foreach ($contentInArray as $key => $val) {
         $asterisksStrings[] = lenghtEntryAsterisks($val); //загоняем в массив количество звёзд в начале строки
@@ -156,23 +156,19 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       sort($asterisksStrings);
       $asterisksStrings = array_unique($asterisksStrings); //уникализируем значения
       //var_dump($asterisksStrings);
-
 // теперь делаем массив размером 5, по количеству уровней после главного заголовка      
       while (count($asterisksStrings) < 6) {
         $asterisksStrings[] = 0;
       }
       sort($asterisksStrings); //сортируем массив
       $asterisksStrings = array_flip($asterisksStrings); //меняем ключи со значениями 
-      var_dump($asterisksStrings);
-replaceAsterisksToEqual($contentInArray, $asterisksStrings);
+      //var_dump($asterisksStrings);
       //==/КОНЕЦ РАЗБОРА МАССИВА С КОНТЕНТОМ. На выходе массив ключ = звёзды, значение = равенства
       //
-     //
-     //
-     //
- 
-      
-     // var_dump(replaceAsterisksToEqualAndLenght($contentInArray));
+
+       $contentInArray = replaceAsterisksToEqual($contentInArray, $asterisksStrings);
+
+      // var_dump(replaceAsterisksToEqualAndLenght($contentInArray));
 //====================== НИЖЕ СОБИРАЕМ ФАЙЛ И ПИШЕМ ================
       $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
       //echo "Содержимое файла целиком:\n".$contentInFile."\n";
