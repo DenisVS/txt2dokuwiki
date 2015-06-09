@@ -248,3 +248,11 @@ function dirUp($url, $level = 1) {
   } while ($level > $i);
   return $url;
 }
+
+function insertCherezOdin($param) {
+  foreach ($param as $key => $val) {
+    $out[] = $val;
+    $out[] = '';
+  }
+  return $out;
+}

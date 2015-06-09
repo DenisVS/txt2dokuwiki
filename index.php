@@ -137,9 +137,12 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
 
       echo 'Заголовок: "' . $header . '"  ' . "\n";
       array_unshift($contentInArray, '====== ' . $header . ' ======'); // вначале вставляем заголовок
+      
+      //var_dump($contentInArray);
+      $contentInArray = insertCherezOdin($contentInArray); // разреживаем контент черезстрочно
+      //var_dump($contentInArray);
 
 
-      var_dump($contentInArray);
 //====================== НИЖЕ СОБИРАЕМ ФАЙЛ И ПИШЕМ ================
       $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
       //echo "Содержимое файла целиком:\n".$contentInFile."\n";
