@@ -112,8 +112,9 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         if (max($asterisksStrings) > 0 && $analysysOfAstarisks['max']['amount'] == 1 && $analysysOfAstarisks['indexes'][0] < 2) {
           //var_dump($countsOfArray);
           //echo "Звёздочки в максимальном количестве не заголовок, их " . $coutMaxAsterisk . "!\n";
+          $header = preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/m', '$4$5', trim( $contentInArray[$analysysOfAstarisks['indexes'][0]])); //обрубаем звёздочки у заголовка
           echo 'Строка заголовка ' . $analysysOfAstarisks['indexes'][0] . "\n";
-          $header = $contentInArray[$analysysOfAstarisks['indexes'][0]] . "\n";
+          //$header = $contentInArray[$analysysOfAstarisks['indexes'][0]] ;
         }
       }
 
@@ -128,9 +129,6 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       }
 
       if ($header == FALSE) {
-        //todo заголовок из названия файла
-
-
         $header = mb_str_replace('_', ' ', $updirName) . ' - ' . mb_str_replace('_', ' ', $filename);
       }
 
