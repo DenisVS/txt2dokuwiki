@@ -77,9 +77,19 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   $extension = pathinfo($sourceFiles[$i]['name'], PATHINFO_EXTENSION); //расширение отдельно
   $updirName = pathinfo(dirUp($sourceFiles[$i]['name'], 1), PATHINFO_BASENAME); // вышележащая директория без пути
 
+
   $currentFileNameFromRoot = $sourceFiles[$i]['name'];  //фиксируем имя текущего файла
   $currentFileNameInsideDir = mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1); // полный путь текущего файла внутри обрабатываемой директории (inDir)
-  // ОТДЕЛЯЕМ ТЕКСТ ОТ МЕДИА
+  //======= с именами на выходе разберёмся…
+  $currentOutFileNameInsideDir = mb_strtolower($currentFileNameInsideDir); // к нижнему регистру
+  $currentOutFileNameInsideDir = mb_str_replace(' ', '_', $currentOutFileNameInsideDir);
+  $currentOutFileNameInsideDir = mb_str_replace(',', '_', $currentOutFileNameInsideDir);
+
+  $currentOutFileNameFromRoot = mb_strtolower($currentFileNameFromRoot); // к нижнему регистру
+  $currentOutFileNameFromRoot = mb_str_replace(' ', '_', $currentOutFileNameFromRoot);
+  $currentOutFileNameFromRoot = mb_str_replace(',', '_', $currentOutFileNameFromRoot);
+
+// ОТДЕЛЯЕМ ТЕКСТ ОТ МЕДИА
   if ($extension == 'txt') {
     //Если файл непустой 
     if ($sourceFiles[$i]['size'] > 0) {
@@ -142,39 +152,35 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       array_unshift($contentInArray, '====== ' . $header . ' ======'); // вначале вставляем заголовок
       //var_dump($contentInArray);
       $contentInArray = insertCherezOdin($contentInArray); // разреживаем контент черезстрочно
-      //var_dump($contentInArray);
-//      
+      //      
       //== РАЗБОР МАССИВА С КОНТЕНТОМ ПОСТРОЧНО. КОЛИЧЕСТВО ЗВЁЗД В КАЖДОЙ СТРОКЕ ПОСЛЕ ПОДМЕНЫ ПЕРВОЙ СТРОКИ.
       // В этом блоке делаем массив с количеством звёзд по убыванию
       unset($asterisksStrings);
       foreach ($contentInArray as $key => $val) {
         $asterisksStrings[] = lenghtEntryAsterisks($val); //загоняем в массив количество звёзд в начале строки
       }
-
       //очистка от пустых строк (использовать вместе!)
       $asterisksStrings = array_filter($asterisksStrings);
       sort($asterisksStrings);
       $asterisksStrings = array_unique($asterisksStrings); //уникализируем значения
-      //var_dump($asterisksStrings);
-// теперь делаем массив размером 5, по количеству уровней после главного заголовка      
+      // теперь делаем массив размером 5, по количеству уровней после главного заголовка      
       while (count($asterisksStrings) < 6) {
         $asterisksStrings[] = 0;
       }
       sort($asterisksStrings); //сортируем массив
       $asterisksStrings = array_flip($asterisksStrings); //меняем ключи со значениями 
-      //var_dump($asterisksStrings);
       //==/КОНЕЦ РАЗБОРА МАССИВА С КОНТЕНТОМ. На выходе массив ключ = звёзды, значение = равенства
+      $contentInArray = replaceAsterisksToEqual($contentInArray, $asterisksStrings); //меняем звёзды на равенства
+      //
       //
 
-       $contentInArray = replaceAsterisksToEqual($contentInArray, $asterisksStrings); //меняем звёзды на равенства
-
-      // var_dump(replaceAsterisksToEqualAndLenght($contentInArray));
+      //
 //====================== НИЖЕ СОБИРАЕМ ФАЙЛ И ПИШЕМ ================
       $outFileContent = $LineByLine->assembling($contentInArray);  //возвращаем из массива в неформатированный текст
       //echo "Содержимое файла целиком:\n".$contentInFile."\n";
       //echo 'Текущий файл: ' . $currentFileName . "\n";
       //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
-      $outFilePath = $outDir . "/" . $currentFileNameInsideDir;
+      $outFilePath = $outDir . "/" . $currentOutFileNameInsideDir;
       echo "Путь целевого файла " . $outFilePath . "\n";
 
       $targetFile = fopen($outFilePath, 'a') or die("can't open file");
@@ -193,7 +199,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       if ($isItDir == FALSE) {
         echo "Копируемый файл нулевой длины " . $currentFileNameFromRoot . "\n";
         //ЭТО ВСТАВКА, ДЛЯ СОЗДАНИЯ ПУСТЫХ ФАЙЛОВ.      
-        $outFilePath = $outDir . "/" . $currentFileNameInsideDir; //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
+        $outFilePath = $outDir . "/" . $currentOutFileNameInsideDir; //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
         echo "Путь целевого файла " . $outFilePath . "\n";
         $targetFile = fopen($outFilePath, 'a') or die("can't open file"); //создаём, пусть будет?
         fclose($targetFile); //закрываем
@@ -203,8 +209,8 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       else {
         // если же директория
         echo 'Копируемая директория ' . $currentFileNameFromRoot . "\n";
-        createDir($outDir . "/" . $currentFileNameInsideDir);
-        createDir($mediaDir . "/" . $currentFileNameInsideDir);
+        createDir($outDir . "/" . $currentOutFileNameInsideDir);
+        createDir($mediaDir . "/" . $currentOutFileNameInsideDir);
         echo "-------------------------------------------------\n";
       }
     }
@@ -234,7 +240,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       //echo "Содержимое файла целиком:\n".$contentInFile."\n";
       //echo 'Текущий файл: ' . $currentFileName . "\n";
       //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
-      $mediaFilePath = $mediaDir . "/" . $currentFileNameInsideDir;
+      $mediaFilePath = $mediaDir . "/" . $currentOutFileNameInsideDir;
       echo "Путь целевого файла " . $mediaFilePath . "\n";
 
       $targetFile = fopen($mediaFilePath, 'a') or die("can't open file");
@@ -253,7 +259,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       if ($isItDir == FALSE) {
         echo "Копируемый файл нулевой длины " . $currentFileNameFromRoot . "\n";
         //ЭТО ВСТАВКА, ДЛЯ СОЗДАНИЯ ПУСТЫХ ФАЙЛОВ.      
-        $mediaFilePath = $mediaDir . "/" . $currentFileNameInsideDir; //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
+        $mediaFilePath = $mediaDir . "/" . $currentOutFileNameInsideDir; //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
         echo "Путь целевого файла " . $mediaFilePath . "\n";
         $targetFile = fopen($mediaFilePath, 'a') or die("can't open file"); //создаём, пусть будет?
         fclose($targetFile); //закрываем
@@ -263,8 +269,8 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       else {
         // если же директория
         echo 'Копируемая директория ' . $currentFileNameFromRoot . "\n";
-        createDir($mediaDir . "/" . $currentFileNameInsideDir);
-        createDir($outDir . "/" . $currentFileNameInsideDir);
+        createDir($mediaDir . "/" . $currentOutFileNameInsideDir);
+        createDir($outDir . "/" . $currentOutFileNameInsideDir);
         echo "-------------------------------------------------\n";
       }
     }
