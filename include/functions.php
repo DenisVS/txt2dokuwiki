@@ -214,14 +214,18 @@ function lenghtEntryAsterisks($param) {
 }
 
 /**
- * Функция замены строки со звёздочками на чистую строку
- * @param type $string
- * @return type
+ * Функция замены строк со звёздами на равенства
+ * @param type $inFileArray
+ * @param type $asterisksAndEqual
+ * @return string
  */
 function replaceAsterisksToEqual($inFileArray, $asterisksAndEqual) {
   foreach ($inFileArray as $string) {
-    // если строки со звёздочками, содержащие текст
-    if (preg_match('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', $string)) {
+    //если сплошные звёзды
+    if (preg_match('/(\A\*{1,}\z)/m', $string)) {
+      $string = preg_replace('/(\A\*{1,}\z)/m', '----', $string); //заменить на черту
+    } //а если текст со звёздами в начале
+    elseif (preg_match('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', $string)) {
       $asterisksBefore = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/sm', '$1', $string));
       $asteriskLenght = (int) strlen($asterisksBefore); //длина "одни звёздочки" в цифрах
       $string = trim(preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/m', '$4$5', $string));
@@ -232,7 +236,7 @@ function replaceAsterisksToEqual($inFileArray, $asterisksAndEqual) {
         $equals .= '=';
       }
       $string = $equals . ' ' . $string . ' ' . $equals;
-      echo $string . " EQ\n";
+      //echo $string . " EQ\n";
     }
     $return[] = $string;
   }

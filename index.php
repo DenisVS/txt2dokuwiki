@@ -166,7 +166,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       //==/КОНЕЦ РАЗБОРА МАССИВА С КОНТЕНТОМ. На выходе массив ключ = звёзды, значение = равенства
       //
 
-       $contentInArray = replaceAsterisksToEqual($contentInArray, $asterisksStrings);
+       $contentInArray = replaceAsterisksToEqual($contentInArray, $asterisksStrings); //меняем звёзды на равенства
 
       // var_dump(replaceAsterisksToEqualAndLenght($contentInArray));
 //====================== НИЖЕ СОБИРАЕМ ФАЙЛ И ПИШЕМ ================
