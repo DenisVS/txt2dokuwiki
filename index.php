@@ -81,9 +81,9 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   $currentFileNameFromRoot = $sourceFiles[$i]['name'];  //фиксируем имя текущего файла
   $currentFileNameInsideDir = mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1); // полный путь текущего файла внутри обрабатываемой директории (inDir)
   //======= с именами на выходе разберёмся…
-  $currentOutFileNameInsideDir = prettyPath($currentFileNameInsideDir); 
-  $currentOutFileNameFromRoot = prettyPath($currentFileNameFromRoot); 
-  
+  $currentOutFileNameInsideDir = prettyPath($currentFileNameInsideDir);
+  $currentOutFileNameFromRoot = prettyPath($currentFileNameFromRoot);
+
 // ОТДЕЛЯЕМ ТЕКСТ ОТ МЕДИА
   if ($extension == 'txt') {
     //Если файл непустой 
@@ -106,11 +106,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         }
       }
       $analysysOfAstarisks = minMaxValues($asterisksStrings);
-      //var_dump($analysysOfAstarisks);
-      //var_dump($asterisksStrings);
       //==/КОНЕЦ РАЗБОРА МАССИВА С КОНТЕНТОМ
-      //      
-      //      
       //      
       ////============      // разберёмся с соотношениями количеств звёзд
       //echo 'MIN: '.$analysysOfAstarisks['min']['value']."\n";
@@ -274,7 +270,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         if ($handle = opendir($inDir . "/" . $currentFileNameInsideDir)) {
           echo "Дескриптор каталога: $handle\n";
           echo "Записи:\n";
-
+          $startContent = NULL;
           /* чтения элементов каталога */
           while (false !== ($entry = readdir($handle))) {
             // если   не диреткория
@@ -288,16 +284,20 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
                 echo "$ф\n";
 
                 if ($attachExtension == '') {
-
                   echo "расширения нет!\n";
-                }
+                 
+                }            
+                
+                $startContent .= '<source '.$ф.' '.$attachExtension.'|'.$ф .'>'."\n\n";
+                
+                
               }
             }
           }
           closedir($handle);
         }
 
-        $startFileContent = "====== " . mb_strtoupper(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . ":INDEX ======\n" . '{{filelist>*&sort=name}}';
+        $startFileContent = "====== " . mb_strtoupper(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . ":INDEX ======\n" .$startContent. '{{filelist>*&sort=name}}';
         $targetFile = fopen($outDir . "/" . $currentOutFileNameInsideDir . '/start.txt', 'a') or die("can't open file"); //создаём
         fwrite($targetFile, $startFileContent); //выводим в файл
         fclose($targetFile); //закрываем
