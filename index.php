@@ -67,7 +67,7 @@ else {
 
 
 $sourceFiles = (getFileList($inDir, TRUE, FALSE, TRUE)); // получаем листинг
-var_dump($sourceFiles);
+//var_dump($sourceFiles);
 //цикл перебора массива файлов
 for ($i = 0; $i < count($sourceFiles); $i++) {
   echo "Обрабатывается " . $sourceFiles[$i]['name'] . "\n";
@@ -81,14 +81,9 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
   $currentFileNameFromRoot = $sourceFiles[$i]['name'];  //фиксируем имя текущего файла
   $currentFileNameInsideDir = mb_substr($currentFileNameFromRoot, $lenghtInPrefixPath + 1); // полный путь текущего файла внутри обрабатываемой директории (inDir)
   //======= с именами на выходе разберёмся…
-  $currentOutFileNameInsideDir = mb_strtolower($currentFileNameInsideDir); // к нижнему регистру
-  $currentOutFileNameInsideDir = mb_str_replace(' ', '_', $currentOutFileNameInsideDir);
-  $currentOutFileNameInsideDir = mb_str_replace(',', '_', $currentOutFileNameInsideDir);
-
-  $currentOutFileNameFromRoot = mb_strtolower($currentFileNameFromRoot); // к нижнему регистру
-  $currentOutFileNameFromRoot = mb_str_replace(' ', '_', $currentOutFileNameFromRoot);
-  $currentOutFileNameFromRoot = mb_str_replace(',', '_', $currentOutFileNameFromRoot);
-
+  $currentOutFileNameInsideDir = prettyPath($currentFileNameInsideDir); 
+  $currentOutFileNameFromRoot = prettyPath($currentFileNameFromRoot); 
+  
 // ОТДЕЛЯЕМ ТЕКСТ ОТ МЕДИА
   if ($extension == 'txt') {
     //Если файл непустой 
@@ -276,9 +271,36 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
 
 
 
+        if ($handle = opendir($inDir . "/" . $currentFileNameInsideDir)) {
+          echo "Дескриптор каталога: $handle\n";
+          echo "Записи:\n";
 
+          /* чтения элементов каталога */
+          while (false !== ($entry = readdir($handle))) {
+            // если   не диреткория
+            if (!is_dir($inDir . "/" . $currentFileNameInsideDir . $entry)) {
 
+              $attachExtension = pathinfo($entry, PATHINFO_EXTENSION);
 
+              if ($attachExtension != 'txt' && trim($entry) != '.' && trim($entry) != '..') {
+                echo "$entry\n";
+                $ф = prettyPath($entry);
+                echo "$ф\n";
+
+                if ($attachExtension == '') {
+
+                  echo "расширения нет!\n";
+                }
+              }
+            }
+          }
+          closedir($handle);
+        }
+
+        $startFileContent = "====== " . mb_strtoupper(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . ":INDEX ======\n" . '{{filelist>*&sort=name}}';
+        $targetFile = fopen($outDir . "/" . $currentOutFileNameInsideDir . '/start.txt', 'a') or die("can't open file"); //создаём
+        fwrite($targetFile, $startFileContent); //выводим в файл
+        fclose($targetFile); //закрываем
         //========= /END СОЗДАНИЕ start.txt в директории
 
 

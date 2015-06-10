@@ -295,3 +295,10 @@ function insertCherezOdin($param) {
   }
   return $out;
 }
+
+function prettyPath($param) {
+  $param = mb_strtolower($param); // к нижнему регистру
+  $param = mb_str_replace(' ', '_', $param);
+  $param = mb_str_replace(',', '_', $param);
+  return $param;
+}
