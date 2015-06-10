@@ -302,3 +302,45 @@ function prettyPath($param) {
   $param = mb_str_replace(',', '_', $param);
   return $param;
 }
+
+function getMimeExtennsion($file) {
+  $mimeType = trim(shell_exec('/usr/bin/file -i "' . $file . '" | /usr/bin/awk \'{print $2}\'  | /usr/bin/awk -F\; \'{print $1}\''));
+  if (trim($mimeType) == 'text/plain') {
+    $extension = 'txt';
+  }
+  else if (trim($mimeType) == 'text/x-c++') {
+
+    $extension = 'cpp';
+  }
+  else if (trim($mimeType) == 'text/html') {
+
+    $extension = 'html';
+  }
+  else if (trim($mimeType) == 'text/xml') {
+
+    $extension = 'xml';
+  }
+  else if (trim($mimeType) == 'text/csv') {
+
+    $extension = 'csv';
+  }
+  else if (trim($mimeType) == 'text/x-pascal') {
+    $extension = 'pas';
+  }
+  else if (trim($mimeType) == 'text/x-perl') {
+    $extension = 'pl';
+  }
+  else if (trim($mimeType) == 'text/x-php') {
+    $extension = 'php';
+  }
+  else if (trim($mimeType) == 'text/x-python') {
+    $extension = 'py';
+  }
+  else if (trim($mimeType) == 'text/x-shellscript') {
+    $extension = 'sh';
+  }
+  else {
+    $extension = 'txt';
+  }
+  return $extension;
+}

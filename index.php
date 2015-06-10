@@ -215,7 +215,8 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       //================ БЛОК РАЗБОРА ТИПОВ ФАЙЛОВ ===================
       //если без расширения, определить тип
       if ($extension == '') {
-        $filetype = trim(shell_exec('/usr/bin/file -i ' . $sourceFiles[$i]['name'] . ' | /usr/bin/awk \'{print $2}\'')) . "\n";
+        //$mimeType = trim(shell_exec('/usr/bin/file -i "' . $sourceFiles[$i]['name'] . '" | /usr/bin/awk \'{print $2}\'  | /usr/bin/awk -F\; \'{print $1}\''));
+        $filetype = getMimeExtennsion($sourceFiles[$i]['name']);
         echo $sourceFiles[$i]['name'] . " FILETYPE: " . $filetype . "\n";
       }
       //если без имени, но с расширением
@@ -273,31 +274,29 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
           $startContent = NULL;
           /* чтения элементов каталога */
           while (false !== ($entry = readdir($handle))) {
-            // если   не диреткория
+            // если   не директория
             if (!is_dir($inDir . "/" . $currentFileNameInsideDir . $entry)) {
 
               $attachExtension = pathinfo($entry, PATHINFO_EXTENSION);
-
+//@todo сделать разбор по типам медиаданных и вставку каталога страниц на стартовой.
               if ($attachExtension != 'txt' && trim($entry) != '.' && trim($entry) != '..') {
                 echo "$entry\n";
-                $ф = prettyPath($entry);
-                echo "$ф\n";
+                $prettyFile = prettyPath($entry);
+                echo "$prettyFile\n";
 
                 if ($attachExtension == '') {
-                  echo "расширения нет!\n";
-                 
-                }            
-                
-                $startContent .= '<source '.$ф.' '.$attachExtension.'|'.$ф .'>'."\n\n";
-                
-                
+                  $attachExtensio = getMimeExtennsion($inDir . "/" . $currentFileNameInsideDir . $entry);
+                  echo 'Расширения нет! Находим тип файла: ' . $attachExtensio . "\n";
+                }
+
+                $startContent .= '<source ' . $prettyFile . ' ' . $attachExtension . '|' . $prettyFile . '>' . "\n\n";
               }
             }
           }
           closedir($handle);
         }
 
-        $startFileContent = "====== " . mb_strtoupper(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . ":INDEX ======\n" .$startContent. '{{filelist>*&sort=name}}';
+        $startFileContent = "====== " . mb_strtoupper(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . ":INDEX ======\n" . $startContent . '{{filelist>*&sort=name}}';
         $targetFile = fopen($outDir . "/" . $currentOutFileNameInsideDir . '/start.txt', 'a') or die("can't open file"); //создаём
         fwrite($targetFile, $startFileContent); //выводим в файл
         fclose($targetFile); //закрываем
