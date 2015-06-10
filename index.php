@@ -133,10 +133,10 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
 
       // если нет заголовка и есть 1-я строка
       if ($header == FALSE && isset($contentInArray[1])) {
-        //если нет / * и 0 строка с содержимым и 1 строка пустая
-        if ((strpos($contentInArray[0], '*') === false) && (strpos($contentInArray[0], '/') === false) && trim($contentInArray[0]) != FALSE && trim($contentInArray[1]) == FALSE) {
+        //если нет (/ * < >) и (0 строка с содержимым) и (1 строка пустая)
+        if ((strpos($contentInArray[0], '*') === false) && (strpos($contentInArray[0], '/') === false) && (strpos($contentInArray[0], '<') === false) && (strpos($contentInArray[0], '>') === false) && (strpos($contentInArray[0], '{') === false) && (strpos($contentInArray[0], '}') === false) && (strpos($contentInArray[0], ':') === false) && trim($contentInArray[0]) != FALSE && trim($contentInArray[1]) == FALSE) {
           echo 'Это первая строка: ' . $contentInArray[0] . "\n";
-          $header = $contentInArray[0];
+          $header = trim($contentInArray[0]);
           $numHeaderString = 0;
           echo 'Строка заголовка ' . $numHeaderString . "\n";
           unset($contentInArray[0]); // Убиваем строку с заголовком
@@ -271,6 +271,19 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         echo 'Копируемая директория ' . $currentFileNameFromRoot . "\n";
         createDir($mediaDir . "/" . $currentOutFileNameInsideDir);
         createDir($outDir . "/" . $currentOutFileNameInsideDir);
+
+        //============== СОЗДАНИЕ start.txt в директории
+
+
+
+
+
+
+        //========= /END СОЗДАНИЕ start.txt в директории
+
+
+
+
         echo "-------------------------------------------------\n";
       }
     }
