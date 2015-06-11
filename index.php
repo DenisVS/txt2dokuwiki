@@ -322,14 +322,15 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
           closedir($handle);
         }
 
-        if ($startContent != NULL) {
+        //if ($startContent != NULL) {  // НЕ СОЗДАВАТЬ СТАРТ, ЕСЛИ НЕТ ФАЙЛОВ
           // == ну и собираем контент для стартового файла, если есть из чего
-          $startFileContent = "====== " . mb_strtoupper(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . ":INDEX ======\n" . $startContent . '{{filelist>*&sort=name}}';
+          //$startFileContent = "====== " . mb_strtoupper(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . ":INDEX ======\n" . '{{filelist>*&sort=name}}' . "\n" . $startContent;
+          $startFileContent = "====== " . ucwords(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . " ======\n" . '{{pagequery>@. *;maxns=2;display=title;sort=ns:asc;natsort;proper;group;hidestart;cols=2;border=both}}'."\n".'{{filelist>*&sort=name}}' . "\n" . $startContent;
           $targetFile = fopen($outDir . "/" . $currentOutFileNameInsideDir . '/start.txt', 'a') or die("can't open file"); //создаём
           fwrite($targetFile, $startFileContent); //выводим в файл
           fclose($targetFile); //закрываем
           //========= /END СОЗДАНИЕ start.txt в директории
-        }
+        //}
 
 
 
