@@ -344,3 +344,21 @@ function getMimeExtennsion($file) {
   }
   return $type;
 }
+
+//----------------------------------------------------------
+// Функция определения MIME-типа файла по его расширению
+//----------------------------------------------------------
+function get_mime_type($ext) {
+  // Массив с MIME-типами
+  global $mimetypes;
+  // Расширение в нижний регистр
+  $ext = trim(strtolower($ext));
+  if ($ext != '' && isset($mimetypes[$ext])) {
+    // Если есть такой MIME-тип, то вернуть его
+    return $mimetypes[$ext];
+  }
+  else {
+    // Иначе вернуть дефолтный MIME-тип
+    return "application/force-download";
+  }
+}

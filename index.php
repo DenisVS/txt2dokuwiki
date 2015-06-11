@@ -7,6 +7,7 @@
  */
 include 'include/functions.php';
 include 'include/classes.php';
+include 'include/mimetypes.php';
 $LineByLine = new LineByLine(); //новый объект
 $path = new ControlEdgeSymbol (); //новый объект
 
@@ -280,24 +281,26 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
               //если не файлы контента и не символы ФС
               if ($attachExtension != 'txt' && $entry != '.' && $entry != '..') {
                 $prettyFile = prettyPath($entry); // приводим имя к стандарту
-                //echo 'Приведённое имя файла: ' . $prettyFile . "\n";
-
-                
-                //оставшиеся файлы без расширения. находим тип.
+                echo 'Приведённое имя файла: ' . $prettyFile . "\n";
+                //оставшиеся файлы без расширения. находим mime и предполагаемое расширение.
                 if ($attachExtension == '') {
-                  $attachExtensio = getMimeExtennsion($inDir . "/" . $currentFileNameInsideDir . $entry)['extension'];
-                  echo 'Расширения нет! Находим тип файла: ' . $attachExtensio . "\n";
+
+                  $attachType = getMimeExtennsion($inDir . "/" . $currentFileNameInsideDir . $entry);
+                  $attachExtension = $attachType['extension'];
+                  $attachMime = $attachType['mime'];
+                  echo 'Расширения нет! Находим тип файла: ' . $attachExtension . "\n";
+                }
+                else {
+                  $attachMime = get_mime_type($attachExtension);  //для остальных определяем mime
+                  echo 'ПОЛУЧЕННЫЙ MIME: '. $attachMime .' ------ '.$prettyFile."\n";
                 }
 
-                
-                
-                
-                
-                $startContent .= '<source ' . $prettyFile . ' ' . $attachExtension . '|' . $prettyFile . '>' . "\n\n";
-                
-                
-                
-                
+
+
+//$pos = strpos($attachMime, 'txt');
+
+                //if (strs)
+                  $startContent .= '<source ' . $prettyFile . ' ' . $attachExtension . '|' . $prettyFile . '>' . "\n\n";
               }
             }
           }
