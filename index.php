@@ -212,18 +212,18 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
     //Если файл непустой 
     if ($sourceFiles[$i]['size'] > 0) {
       echo "Размер > 0!\n";
-      //================ БЛОК РАЗБОРА ТИПОВ ФАЙЛОВ ===================
-      //если без расширения, определить тип
-      if ($extension == '') {
-        //$mimeType = trim(shell_exec('/usr/bin/file -i "' . $sourceFiles[$i]['name'] . '" | /usr/bin/awk \'{print $2}\'  | /usr/bin/awk -F\; \'{print $1}\''));
-        $filetype = getMimeExtennsion($sourceFiles[$i]['name']);
-        echo $sourceFiles[$i]['name'] . " FILETYPE: " . $filetype . "\n";
-      }
-      //если без имени, но с расширением
-      if ($extension != '' && $filename == '') {
-        echo "NONAME: " . $sourceFiles[$i]['name'] . "\n";
-      }
-      //=====================================
+//      //================ БЛОК РАЗБОРА ТИПОВ ФАЙЛОВ ===================
+//      //если без расширения, определить тип
+//      if ($extension == '') {
+//        //$mimeType = trim(shell_exec('/usr/bin/file -i "' . $sourceFiles[$i]['name'] . '" | /usr/bin/awk \'{print $2}\'  | /usr/bin/awk -F\; \'{print $1}\''));
+//        $filetype = getMimeExtennsion($sourceFiles[$i]['name']);
+//        echo $sourceFiles[$i]['name'] . " FILETYPE: " . $filetype . "\n";
+//      }
+//      //если без имени, но с расширением
+//      if ($extension != '' && $filename == '') {
+//        echo "NONAME: " . $sourceFiles[$i]['name'] . "\n";
+//      }
+//      //=====================================
 
       $inFileContent = file_get_contents($currentFileNameFromRoot); // дёргаем контент целиком
       //echo "Содержимое файла целиком:\n".$contentInFile."\n";
@@ -267,7 +267,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         //============== СОЗДАНИЕ start.txt в директории
 
 
-
+         //== читаем директорию исходных файлов, ищем вложения
         if ($handle = opendir($inDir . "/" . $currentFileNameInsideDir)) {
           echo "Дескриптор каталога: $handle\n";
           echo "Записи:\n";
@@ -277,9 +277,10 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
             // если   не директория
             if (!is_dir($inDir . "/" . $currentFileNameInsideDir . $entry)) {
 
-              $attachExtension = pathinfo($entry, PATHINFO_EXTENSION);
-//@todo сделать разбор по типам медиаданных и вставку каталога страниц на стартовой.
-              if ($attachExtension != 'txt' && trim($entry) != '.' && trim($entry) != '..') {
+              $attachExtension = trim(pathinfo($entry, PATHINFO_EXTENSION));
+//@todo разбор по типам медиаданных и вставку каталога страниц на стартовой.
+//@todo разобраться с мультибайтовыми строками в source plugin
+              if ($attachExtension != 'txt' && $entry != '.' && $entry != '..') {
                 echo "$entry\n";
                 $prettyFile = prettyPath($entry);
                 echo "$prettyFile\n";
@@ -295,7 +296,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
           }
           closedir($handle);
         }
-
+        // == ну и собираем контент для стартового файла
         $startFileContent = "====== " . mb_strtoupper(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . ":INDEX ======\n" . $startContent . '{{filelist>*&sort=name}}';
         $targetFile = fopen($outDir . "/" . $currentOutFileNameInsideDir . '/start.txt', 'a') or die("can't open file"); //создаём
         fwrite($targetFile, $startFileContent); //выводим в файл
