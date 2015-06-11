@@ -216,7 +216,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
 //      //если без расширения, определить тип
 //      if ($extension == '') {
 //        //$mimeType = trim(shell_exec('/usr/bin/file -i "' . $sourceFiles[$i]['name'] . '" | /usr/bin/awk \'{print $2}\'  | /usr/bin/awk -F\; \'{print $1}\''));
-//        $filetype = getMimeExtennsion($sourceFiles[$i]['name']);
+//        $filetype = getMimeExtennsion($sourceFiles[$i]['name'])['extension'];
 //        echo $sourceFiles[$i]['name'] . " FILETYPE: " . $filetype . "\n";
 //      }
 //      //если без имени, но с расширением
@@ -265,9 +265,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         createDir($outDir . "/" . $currentOutFileNameInsideDir);
 
         //============== СОЗДАНИЕ start.txt в директории
-
-
-         //== читаем директорию исходных файлов, ищем вложения
+        //== читаем директорию исходных файлов, ищем вложения
         if ($handle = opendir($inDir . "/" . $currentFileNameInsideDir)) {
           echo "Дескриптор каталога: $handle\n";
           echo "Записи:\n";
@@ -276,21 +274,30 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
           while (false !== ($entry = readdir($handle))) {
             // если   не директория
             if (!is_dir($inDir . "/" . $currentFileNameInsideDir . $entry)) {
-
               $attachExtension = trim(pathinfo($entry, PATHINFO_EXTENSION));
 //@todo разбор по типам медиаданных и вставку каталога страниц на стартовой.
 //@todo разобраться с мультибайтовыми строками в source plugin
+              //если не файлы контента и не символы ФС
               if ($attachExtension != 'txt' && $entry != '.' && $entry != '..') {
-                echo "$entry\n";
-                $prettyFile = prettyPath($entry);
-                echo "$prettyFile\n";
+                $prettyFile = prettyPath($entry); // приводим имя к стандарту
+                //echo 'Приведённое имя файла: ' . $prettyFile . "\n";
 
+                
+                //оставшиеся файлы без расширения. находим тип.
                 if ($attachExtension == '') {
-                  $attachExtensio = getMimeExtennsion($inDir . "/" . $currentFileNameInsideDir . $entry);
+                  $attachExtensio = getMimeExtennsion($inDir . "/" . $currentFileNameInsideDir . $entry)['extension'];
                   echo 'Расширения нет! Находим тип файла: ' . $attachExtensio . "\n";
                 }
 
+                
+                
+                
+                
                 $startContent .= '<source ' . $prettyFile . ' ' . $attachExtension . '|' . $prettyFile . '>' . "\n\n";
+                
+                
+                
+                
               }
             }
           }

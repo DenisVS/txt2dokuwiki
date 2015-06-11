@@ -304,43 +304,43 @@ function prettyPath($param) {
 }
 
 function getMimeExtennsion($file) {
-  $mimeType = trim(shell_exec('/usr/bin/file -i "' . $file . '" | /usr/bin/awk \'{print $2}\'  | /usr/bin/awk -F\; \'{print $1}\''));
-  if (trim($mimeType) == 'text/plain') {
-    $extension = 'txt';
+  $type['mime'] = trim(shell_exec('/usr/bin/file -i "' . $file . '" | /usr/bin/awk \'{print $2}\'  | /usr/bin/awk -F\; \'{print $1}\''));
+  if ($type['mime'] == 'text/plain') {
+    $type['extension'] = 'txt';
   }
-  else if (trim($mimeType) == 'text/x-c++') {
+  else if ($type['mime'] == 'text/x-c++') {
 
-    $extension = 'cpp';
+    $type['extension'] = 'cpp';
   }
-  else if (trim($mimeType) == 'text/html') {
+  else if ($type['mime'] == 'text/html') {
 
-    $extension = 'html';
+    $type['extension'] = 'html';
   }
-  else if (trim($mimeType) == 'text/xml') {
+  else if ($type['mime'] == 'text/xml') {
 
-    $extension = 'xml';
+    $type['extension'] = 'xml';
   }
-  else if (trim($mimeType) == 'text/csv') {
+  else if ($type['mime'] == 'text/csv') {
 
-    $extension = 'csv';
+    $type['extension'] = 'csv';
   }
-  else if (trim($mimeType) == 'text/x-pascal') {
-    $extension = 'pas';
+  else if ($type['mime'] == 'text/x-pascal') {
+    $type['extension'] = 'pas';
   }
-  else if (trim($mimeType) == 'text/x-perl') {
-    $extension = 'pl';
+  else if ($type['mime'] == 'text/x-perl') {
+    $type['extension'] = 'pl';
   }
-  else if (trim($mimeType) == 'text/x-php') {
-    $extension = 'php';
+  else if ($type['mime'] == 'text/x-php') {
+    $type['extension'] = 'php';
   }
-  else if (trim($mimeType) == 'text/x-python') {
-    $extension = 'py';
+  else if ($type['mime'] == 'text/x-python') {
+    $type['extension'] = 'py';
   }
-  else if (trim($mimeType) == 'text/x-shellscript') {
-    $extension = 'sh';
+  else if ($type['mime'] == 'text/x-shellscript') {
+    $type['extension'] = 'sh';
   }
   else {
-    $extension = 'txt';
+    $type['extension'] = 'txt';
   }
-  return $extension;
+  return $type;
 }
