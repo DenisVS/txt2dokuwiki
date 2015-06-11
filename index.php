@@ -145,7 +145,8 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       }
 
       if ($header == FALSE) {
-        $header = trim(mb_str_replace('_', ' ', $updirName) . ' - ' . mb_str_replace('_', ' ', $filename));
+        //$header = trim(mb_str_replace('_', ' ', $updirName) . ' - ' . mb_str_replace('_', ' ', $filename)); Вариант Updir - Title
+        $header = trim(mb_str_replace('_', ' ', $filename));
         $numHeaderString = NULL;
       }
 
@@ -286,6 +287,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
             if (!is_dir($inDir . "/" . $currentFileNameInsideDir . $entry)) {
               $attachExtension = trim(pathinfo($entry, PATHINFO_EXTENSION));
 //@todo разобраться с мультибайтовыми строками в source plugin
+//@todo ini файлы
               //если не файлы контента и не символы ФС
               if ($attachExtension != 'txt' && $entry != '.' && $entry != '..') {
                 $prettyFile = prettyPath($entry); // приводим имя к стандарту
@@ -325,7 +327,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         //if ($startContent != NULL) {  // НЕ СОЗДАВАТЬ СТАРТ, ЕСЛИ НЕТ ФАЙЛОВ
           // == ну и собираем контент для стартового файла, если есть из чего
           //$startFileContent = "====== " . mb_strtoupper(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . ":INDEX ======\n" . '{{filelist>*&sort=name}}' . "\n" . $startContent;
-          $startFileContent = "====== " . ucwords(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . " ======\n" . '{{pagequery>@. *;maxns=2;display=title;sort=ns:asc;natsort;proper;group;hidestart;cols=2;border=both}}'."\n".'{{filelist>*&sort=name}}' . "\n" . $startContent;
+          $startFileContent = "====== " . ucwords(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . " ======\n" . '<catlist .  -noHead   -noLinkStartHead -sortAscending -maxDepth:1>'."\n".'{{filelist>*&sort=name}}' . "\n" . $startContent;
           $targetFile = fopen($outDir . "/" . $currentOutFileNameInsideDir . '/start.txt', 'a') or die("can't open file"); //создаём
           fwrite($targetFile, $startFileContent); //выводим в файл
           fclose($targetFile); //закрываем
