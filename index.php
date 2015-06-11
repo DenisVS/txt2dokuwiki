@@ -292,15 +292,23 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
                 }
                 else {
                   $attachMime = get_mime_type($attachExtension);  //для остальных определяем mime
-                  echo 'ПОЛУЧЕННЫЙ MIME: '. $attachMime .' ------ '.$prettyFile."\n";
+                  echo 'ПОЛУЧЕННЫЙ MIME: ' . $attachMime . ' ------ ' . $prettyFile . "\n";
                 }
+                //=== Теперь смотрим, что за mime и согасно им встраиваем в страницу
 
-
-
-//$pos = strpos($attachMime, 'txt');
-
-                //if (strs)
+                if (strpos($attachMime, 'text') !== FALSE && strpos($attachMime, 'x-sql') === FALSE && strpos($attachMime, 'x-xslt') === FALSE && strpos($attachMime, 'x-log') === FALSE && strpos($attachMime, 'x-comma-separated-values') === FALSE) {
+                  echo '>>>>>>>>>>>>>>>>Найдена строка с текстом:' . $attachMime . "\n";
                   $startContent .= '<source ' . $prettyFile . ' ' . $attachExtension . '|' . $prettyFile . '>' . "\n\n";
+                }
+                elseif (strpos($attachMime, 'image') !== FALSE && strpos($attachMime, 'djvu') === FALSE) {
+                  echo '>>>>>>>>>>>>>>>>Найдена строка с изображением:' . $attachMime . "\n";
+                  $startContent .= '{{ ' . $prettyFile . ' }}' . "\n\n";
+                }
+                elseif (strpos($attachMime, 'application') !== FALSE && (strpos($attachMime, 'x-shellscript') !== FALSE OR strpos($attachMime, 'x-python') !== FALSE OR strpos($attachMime, 'x-javascript') !== FALSE OR strpos($attachMime, 'x-php') !== FALSE OR strpos($attachMime, 'x-genesis-rom') !== FALSE OR strpos($attachMime, 'x-desktop') !== FALSE OR strpos($attachMime, 'x-perl') !== FALSE)) {
+                  echo '>>>>>>>>>>>>>>>>Найдена строка с кодом:' . $attachMime . "\n";
+                  $startContent .= '<source ' . $prettyFile . ' ' . $attachExtension . '|' . $prettyFile . '>' . "\n\n";
+
+                  }
               }
             }
           }
