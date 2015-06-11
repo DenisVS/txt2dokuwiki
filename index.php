@@ -126,15 +126,15 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       // если нет заголовка и есть 1-я строка
       if ($header == FALSE && isset($contentInArray[1])) {
         //если нет (/ * < >) и (0 строка с содержимым до 80 символов) и (1 строка пустая)
-        if ((strpos($contentInArray[0], '*') === false) && 
-            (strpos($contentInArray[0], '/') === false) && 
-            (strpos($contentInArray[0], '<') === false) && 
-            (strpos($contentInArray[0], '>') === false) && 
-            (strpos($contentInArray[0], '{') === false) && 
-            (strpos($contentInArray[0], '}') === false) && 
-            (strpos($contentInArray[0], ':') === false) && 
-            (mb_strlen($contentInArray[0]) < 80) && 
-            trim($contentInArray[0]) != FALSE && 
+        if ((strpos($contentInArray[0], '*') === false) &&
+            (strpos($contentInArray[0], '/') === false) &&
+            (strpos($contentInArray[0], '<') === false) &&
+            (strpos($contentInArray[0], '>') === false) &&
+            (strpos($contentInArray[0], '{') === false) &&
+            (strpos($contentInArray[0], '}') === false) &&
+            (strpos($contentInArray[0], ':') === false) &&
+            (mb_strlen($contentInArray[0]) < 80) &&
+            trim($contentInArray[0]) != FALSE &&
             trim($contentInArray[1]) == FALSE) {
           echo 'Это первая строка: ' . $contentInArray[0] . "\n";
           $header = trim($contentInArray[0]);
@@ -285,7 +285,6 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
             // если   не директория
             if (!is_dir($inDir . "/" . $currentFileNameInsideDir . $entry)) {
               $attachExtension = trim(pathinfo($entry, PATHINFO_EXTENSION));
-//@todo разбор по типам медиаданных и вставку каталога страниц на стартовой.
 //@todo разобраться с мультибайтовыми строками в source plugin
               //если не файлы контента и не символы ФС
               if ($attachExtension != 'txt' && $entry != '.' && $entry != '..') {
@@ -316,20 +315,21 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
                 elseif (strpos($attachMime, 'application') !== FALSE && (strpos($attachMime, 'x-shellscript') !== FALSE OR strpos($attachMime, 'x-python') !== FALSE OR strpos($attachMime, 'x-javascript') !== FALSE OR strpos($attachMime, 'x-php') !== FALSE OR strpos($attachMime, 'x-genesis-rom') !== FALSE OR strpos($attachMime, 'x-desktop') !== FALSE OR strpos($attachMime, 'x-perl') !== FALSE)) {
                   echo '>>>>>>>>>>>>>>>>Найдена строка с кодом:' . $attachMime . "\n";
                   $startContent .= '<source ' . $prettyFile . ' ' . $attachExtension . '|' . $prettyFile . '>' . "\n\n";
-
-                  }
+                }
               }
             }
           }
           closedir($handle);
         }
-        // == ну и собираем контент для стартового файла
-        $startFileContent = "====== " . mb_strtoupper(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . ":INDEX ======\n" . $startContent . '{{filelist>*&sort=name}}';
-        $targetFile = fopen($outDir . "/" . $currentOutFileNameInsideDir . '/start.txt', 'a') or die("can't open file"); //создаём
-        fwrite($targetFile, $startFileContent); //выводим в файл
-        fclose($targetFile); //закрываем
-        //========= /END СОЗДАНИЕ start.txt в директории
 
+        if ($startContent != NULL) {
+          // == ну и собираем контент для стартового файла, если есть из чего
+          $startFileContent = "====== " . mb_strtoupper(pathinfo(dirUp($currentOutFileNameInsideDir), PATHINFO_BASENAME)) . ":INDEX ======\n" . $startContent . '{{filelist>*&sort=name}}';
+          $targetFile = fopen($outDir . "/" . $currentOutFileNameInsideDir . '/start.txt', 'a') or die("can't open file"); //создаём
+          fwrite($targetFile, $startFileContent); //выводим в файл
+          fclose($targetFile); //закрываем
+          //========= /END СОЗДАНИЕ start.txt в директории
+        }
 
 
 
