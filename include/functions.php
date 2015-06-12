@@ -270,7 +270,7 @@ function mb_str_replace($needle, $replacement, $haystack) {
   }
   return $haystack;
 }
-
+//@todo расширение inc. ini tpl tmpl
 /**
  * Функция подъёма по директориям выше на заданное количество ступеней (слэшей). 
  * Обрубает лишние низлежащие. Дефолтно 1 уровень.

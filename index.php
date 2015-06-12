@@ -174,46 +174,31 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       $itsCode = FALSE;
       $whatSearch = 'start'; // начинаем с начала
       foreach ($contentInArray as $key => $val) {
-
         if ((preg_match('/(<\?)(php)*(\s|\n|\n\r|\r|\z)/m', $val)) && $whatSearch == 'start') {
           $contentInArray[$key] = '<file php example.php>' . "\n" . $val;
-
-          echo 'VAL BEFORE ' . $val . "\n";
-
-          echo 'SSSSSSSSSSSSSSS START ' . $codeInText[$key]['start'] . ' ' . $key . "\n";
-          echo 'VAL BEFORE  ' . $val . "\n";
-          //$itsCode = TRUE; //Сигналим, чтобы конец искало и не вставляло строку
           $whatSearch = 'end'; //
-
-          $forEndTest = splitStringByEntry(trim($val), '?>', '</file>');
+          $forEndTest = splitStringByEntry(trim($contentInArray[$key]), '?>', '</file>');
           if ($forEndTest != FALSE) {
             $codeInText[$key]['end'] = TRUE; //Конец тут же нашёлся
-            //$itsCode = FALSE; //Всё, не ищем конец
             $val = $forEndTest;
             $contentInArray[$key] = $val;
-            echo 'НАШЛИ КОНЕЦ, НЕ ИЩЕМ  ' . $val . "\n";
             $whatSearch = 'start'; //
           }
+
+
         }
         else {
           $codeInText[$key]['start'] = FALSE;
         }
-
-        //var_dump($itsCode); 
         //Если в конце маркер и дозволено искать конец
         if (mb_strendpresent(trim($val), '?>') == TRUE && $whatSearch == 'end') {
           $contentInArray[$key] = $val . "\n" . '</file>' . "\n";
-          echo 'ПОИСК КОНЦА! ' . $val . "\n";
           $codeInText[$key]['end'] = TRUE;
-          echo 'VAL AFTER ' . $val . "\n";
-          echo 'SSSSSSSSSSSSSSS END ' . $codeInText[$key]['end'] . ' ' . $key . "\n";
-          echo 'VAL AFTER  ' . $val . "\n";
           $whatSearch = 'start'; //Раз нашли. не ищем
         }
         else {
           $codeInText[$key]['end'] = FALSE;
         }
-
         if ($whatSearch == 'start') {
           $codeInText[$key]['its_code'] = FALSE;
         }
@@ -365,7 +350,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
             if (!is_dir($inDir . "/" . $currentFileNameInsideDir . $entry)) {
               $attachExtension = trim(pathinfo($entry, PATHINFO_EXTENSION));
 //@todo разобраться с мультибайтовыми строками в source plugin
-//@todo ini файлы
+
               //если не файлы контента и не символы ФС
               if ($attachExtension != 'txt' && $entry != '.' && $entry != '..') {
                 $prettyFile = prettyPath($entry); // приводим имя к стандарту
