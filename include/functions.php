@@ -362,3 +362,30 @@ function get_mime_type($ext) {
     return "application/force-download";
   }
 }
+
+function mb_strendpresent($haystack, $needle) {
+  $lenghtHaystack = mb_strlen($haystack);
+  $lenghtNeedle = mb_strlen($needle);
+  if ($lenghtHaystack >= $lenghtNeedle) {
+    if (mb_strpos($haystack, $needle, $lenghtHaystack - $lenghtNeedle) === $lenghtHaystack - $lenghtNeedle) {
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
+  }
+  return FALSE;
+}
+
+function splitStringByEntry($haystack, $needle, $insert) {
+// Если встречается вхождение, делим строку
+  $lenghtHaystack = mb_strlen($haystack);
+  $lenghtNeedle = mb_strlen($needle);
+  $var = strpos($haystack, $needle);
+  if ($var !== FALSE) {
+    $str1 = mb_substr($haystack, 0, $var + $lenghtNeedle);
+    $str2 = mb_substr($haystack, $var + $lenghtNeedle);
+    return $str1 . "\n" . $insert . "\n" . $str2;
+  }
+  return FALSE;
+}
