@@ -270,6 +270,7 @@ function mb_str_replace($needle, $replacement, $haystack) {
   }
   return $haystack;
 }
+
 //@todo расширение inc. ini tpl tmpl
 /**
  * Функция подъёма по директориям выше на заданное количество ступеней (слэшей). 
@@ -298,10 +299,13 @@ function insertCherezOdin($param, $param1) {
   return $out;
 }
 
-function prettyPath($param) {
+function prettyPath($param, $translit = FALSE) {
   $param = mb_strtolower($param); // к нижнему регистру
   $param = mb_str_replace(' ', '_', $param);
   $param = mb_str_replace(',', '_', $param);
+  if ($translit == TRUE) {
+    $param = strtr($param, array('а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ё' => 'e', 'ж' => 'j', 'з' => 'z', 'и' => 'i', 'й' => 'y', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o', 'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h', 'ц' => 'c', 'ч' => 'ch', 'ш' => 'sh', 'щ' => 'shch', 'ы' => 'y', 'э' => 'e', 'ю' => 'yu', 'я' => 'ya', 'ъ' => '', 'ь' => ''));
+  }
   return $param;
 }
 

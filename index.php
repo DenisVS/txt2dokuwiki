@@ -184,8 +184,6 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
             $contentInArray[$key] = $val;
             $whatSearch = 'start'; //
           }
-
-
         }
         else {
           $codeInText[$key]['start'] = FALSE;
@@ -307,7 +305,10 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       //echo 'Текущий файл: ' . $currentFileName . "\n";
       //извлекаем из полного пути+файла имя файла. Пристыковываем выходную директорию и дерево
       $mediaFilePath = $mediaDir . "/" . $currentOutFileNameInsideDir;
-      echo "Путь целевого файла " . $mediaFilePath . "\n";
+      echo "Путь целевого медиа файла " . $mediaFilePath . "\n";
+      // 
+      $mediaFilePath = dirUp($mediaFilePath) . '/' . prettyPath(pathinfo($mediaFilePath, PATHINFO_BASENAME), TRUE);
+      echo 'MEDIA: ' . $mediaFilePath . "\n";
 
       $targetFile = fopen($mediaFilePath, 'a') or die("can't open file");
       fwrite($targetFile, $mediaFileContent); //выводим в файл
@@ -342,6 +343,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         //== читаем директорию исходных файлов, ищем вложения
         if ($handle = opendir($inDir . "/" . $currentFileNameInsideDir)) {
           echo "Дескриптор каталога: $handle\n";
+          echo "FFFFFFFF: $currentFileNameInsideDir\n";
           echo "Записи:\n";
           $startContent = NULL;
           /* чтения элементов каталога */
@@ -350,10 +352,10 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
             if (!is_dir($inDir . "/" . $currentFileNameInsideDir . $entry)) {
               $attachExtension = trim(pathinfo($entry, PATHINFO_EXTENSION));
 //@todo разобраться с мультибайтовыми строками в source plugin
-
               //если не файлы контента и не символы ФС
               if ($attachExtension != 'txt' && $entry != '.' && $entry != '..') {
-                $prettyFile = prettyPath($entry); // приводим имя к стандарту
+                //$prettyFile = prettyPath($entry); // приводим имя файла к стандарту
+                $prettyFile = prettyPath($entry, TRUE); // приводим имя файла к стандарту
                 echo 'Приведённое имя файла: ' . $prettyFile . "\n";
                 //оставшиеся файлы без расширения. находим mime и предполагаемое расширение.
                 if ($attachExtension == '') {
