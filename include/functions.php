@@ -288,10 +288,12 @@ function dirUp($url, $level = 1) {
   return $url;
 }
 
-function insertCherezOdin($param) {
+function insertCherezOdin($param, $param1) {
   foreach ($param as $key => $val) {
     $out[] = $val;
-    $out[] = '';
+    if ($param1[$key]['its_code'] == FALSE) {
+      $out[] = '';
+    }
   }
   return $out;
 }
