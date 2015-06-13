@@ -343,19 +343,17 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
         //============== СОЗДАНИЕ start.txt в директории
         //== читаем директорию исходных файлов, ищем вложения
         if ($handle = opendir($inDir . "/" . $currentFileNameInsideDir)) {
-          echo "Дескриптор каталога: $handle\n";
-          echo "FFFFFFFF: $currentFileNameInsideDir\n";
-          echo "Записи:\n";
+          //echo "Дескриптор каталога: $handle\n";
+          //echo "Записи:\n";
           $startContent = NULL;
           /* чтения элементов каталога */
           while (false !== ($entry = readdir($handle))) {
             // если   не директория
             if (!is_dir($inDir . "/" . $currentFileNameInsideDir . $entry)) {
-
               //---------ЗДЕСЬ ОПРЕДЕЛЯЕТСЯ РАСШИРЕНИЕ МЕДИАФАЛОВ
               $attachExtension = trim(pathinfo($entry, PATHINFO_EXTENSION));
               echo 'EXTENSION: ' . $attachExtension . "\n";
-//@todo разобраться с мультибайтовыми строками в source plugin
+              //@todo разобраться с мультибайтовыми строками в source plugin
               //если не файлы контента и не символы ФС
               if ($attachExtension != 'txt' && $entry != '.' && $entry != '..') {
                 //$prettyFile = prettyPath($entry); // приводим имя файла к стандарту
