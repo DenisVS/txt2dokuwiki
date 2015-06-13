@@ -29,6 +29,7 @@ $mimetypes = Array(
   "asp" => "application/x-asp",
   "asx" => "video/x-ms-asf",
   "au" => "audio/basic",
+  "au3" => "text/x-autoit",
   "avi" => "video/x-msvideo",
   "aw" => "application/x-applix-word",
   "bak" => "application/x-trash",
