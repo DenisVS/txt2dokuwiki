@@ -266,6 +266,7 @@ $mimetypes = Array(
   "ras" => "image/x-cmu-raster",
   "rdf" => "text/rdf",
   "rej" => "application/x-reject",
+  "reg" => "text/plain",
   "rgb" => "image/x-rgb",
   "rle" => "image/rle",
   "rm" => "audio/x-pn-realaudio",

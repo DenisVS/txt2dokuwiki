@@ -302,6 +302,7 @@ function insertCherezOdin($param, $param1) {
 function prettyPath($param, $translit = FALSE) {
   $param = mb_strtolower($param); // к нижнему регистру
   $param = mb_str_replace(' ', '_', $param); //запаятые в подчёркивания
+  $param = mb_str_replace('+', '_', $param); //полюсы в подчёркивания
   $param = mb_str_replace(',', '_', $param); //точки в подчёркивания
   $param = mb_str_replace('(', '_', $param); //скобки в подчёркивания
   $param = mb_str_replace(')', '_', $param); //скобки в подчёркивания

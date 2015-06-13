@@ -110,11 +110,10 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       //==/КОНЕЦ РАЗБОРА МАССИВА С КОНТЕНТОМ
       //      
       ////============      // разберёмся с соотношениями количеств звёзд
-      //echo 'MIN: '.$analysysOfAstarisks['min']['value']."\n";
       if ($header == FALSE) {
         echo 'Количество максимумов ' . $analysysOfAstarisks['max']['quantity'] . "\n";
-
-        if (max($asterisksStrings) > 0 && $analysysOfAstarisks['max']['quantity'] == 1 && $analysysOfAstarisks['max_indexes'][0] < 2) {
+        //если максимумов звёзд с текстом больше нуля и максимум один и определённый максимумом не сплошные звёзды без текста
+        if (max($asterisksStrings) > 0 && $analysysOfAstarisks['max']['quantity'] == 1 && $analysysOfAstarisks['max_indexes'][0] < 2 && (preg_match('/(\A\*{1,}\z)/m', trim($contentInArray[$analysysOfAstarisks['max_indexes'][0]])) == FALSE)) {
           //echo "Звёздочки в максимальном количестве не заголовок, их " . $coutMaxAsterisk . "!\n";
           $header = preg_replace('/(^(\*){1,50})(\*?)(.*?)([^*])(\**)\z/m', '$4$5', trim($contentInArray[$analysysOfAstarisks['max_indexes'][0]])); //обрубаем звёздочки у заголовка
           $numHeaderString = $analysysOfAstarisks['max_indexes'][0];
@@ -136,9 +135,10 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
 
 
 
-      // если нет заголовка и есть 1-я строка
+      // если нет заголовка и есть 1-я строка 
       if ($header == FALSE && isset($contentInArray[1])) {
-        //если нет (/ * < >) и (0 строка с содержимым до 80 символов) и (1 строка пустая)
+
+//если нет (/ * < >) и (0 строка с содержимым до 80 символов) и (1 строка пустая)
         if ((strpos($contentInArray[0], '*') === false) &&
             (strpos($contentInArray[0], '/') === false) &&
             (strpos($contentInArray[0], '<') === false) &&
@@ -149,6 +149,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
             (mb_strlen($contentInArray[0]) < 80) &&
             trim($contentInArray[0]) != FALSE &&
             trim($contentInArray[1]) == FALSE) {
+
           echo 'Это первая строка: ' . $contentInArray[0] . "\n";
           $header = trim($contentInArray[0]);
           $numHeaderString = 0;
@@ -307,7 +308,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       $mediaFilePath = $mediaDir . "/" . $currentOutFileNameInsideDir;
       echo "Путь целевого медиа файла " . $mediaFilePath . "\n";
       // 
-      $mediaFilePath = dirUp($mediaFilePath) . '/' . prettyPath(pathinfo($mediaFilePath, PATHINFO_BASENAME), TRUE);
+      $mediaFilePath = dirUp($mediaFilePath) . '/' . prettyPath(pathinfo($mediaFilePath, PATHINFO_BASENAME), TRUE); //@warning Base names media files only!
       echo 'MEDIA: ' . $mediaFilePath . "\n";
 
       $targetFile = fopen($mediaFilePath, 'a') or die("can't open file");
@@ -350,12 +351,15 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
           while (false !== ($entry = readdir($handle))) {
             // если   не директория
             if (!is_dir($inDir . "/" . $currentFileNameInsideDir . $entry)) {
+
+              //---------ЗДЕСЬ ОПРЕДЕЛЯЕТСЯ РАСШИРЕНИЕ МЕДИАФАЛОВ
               $attachExtension = trim(pathinfo($entry, PATHINFO_EXTENSION));
+              echo 'EXTENSION: ' . $attachExtension . "\n";
 //@todo разобраться с мультибайтовыми строками в source plugin
               //если не файлы контента и не символы ФС
               if ($attachExtension != 'txt' && $entry != '.' && $entry != '..') {
                 //$prettyFile = prettyPath($entry); // приводим имя файла к стандарту
-                $prettyFile = prettyPath($entry, TRUE); // приводим имя файла к стандарту
+                $prettyFile = prettyPath($entry, TRUE); //@warning Base names media files only! 
                 echo 'Приведённое имя файла: ' . $prettyFile . "\n";
                 //оставшиеся файлы без расширения. находим mime и предполагаемое расширение.
                 if ($attachExtension == '') {
