@@ -308,7 +308,8 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
       $mediaFilePath = $mediaDir . "/" . $currentOutFileNameInsideDir;
       echo "Путь целевого медиа файла " . $mediaFilePath . "\n";
       // 
-      $mediaFilePath = dirUp($mediaFilePath) . '/' . prettyPath(pathinfo($mediaFilePath, PATHINFO_BASENAME), TRUE); //@warning Base names media files only!
+      //$mediaFilePath = dirUp($mediaFilePath) . '/' . prettyPath(pathinfo($mediaFilePath, PATHINFO_BASENAME), TRUE); //@warning Base names media files only!
+      $mediaFilePath = dirUp($mediaFilePath) . '/' . prettyPath(pathinfo($mediaFilePath, PATHINFO_BASENAME)); //@warning withoout translit
       echo 'MEDIA: ' . $mediaFilePath . "\n";
 
       $targetFile = fopen($mediaFilePath, 'a') or die("can't open file");
@@ -353,11 +354,12 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
               //---------ЗДЕСЬ ОПРЕДЕЛЯЕТСЯ РАСШИРЕНИЕ МЕДИАФАЛОВ
               $attachExtension = trim(pathinfo($entry, PATHINFO_EXTENSION));
               echo 'EXTENSION: ' . $attachExtension . "\n";
-              //@todo разобраться с мультибайтовыми строками в source plugin
+              
               //если не файлы контента и не символы ФС
               if ($attachExtension != 'txt' && $entry != '.' && $entry != '..') {
                 //$prettyFile = prettyPath($entry); // приводим имя файла к стандарту
-                $prettyFile = prettyPath($entry, TRUE); //@warning Base names media files only! 
+                //$prettyFile = prettyPath($entry, TRUE); //@warning Base names media files only! 
+                $prettyFile = prettyPath($entry); //@warning without translit
                 echo 'Приведённое имя файла: ' . $prettyFile . "\n";
                 //оставшиеся файлы без расширения. находим mime и предполагаемое расширение.
                 // Форматируем путь согласно вики синтаксису
@@ -396,7 +398,7 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
                 }
                 elseif (strpos($attachMime, 'image') !== FALSE && strpos($attachMime, 'djvu') === FALSE) {
                   echo '>>>>>>>>>>>>>>>>Найдена строка с изображением:' . $attachMime . "\n";
-                  $startContent .= "\n" . '{{ ' . $mediaFileContainDirWikiFormat . $prettyFile . ' }}' . "\n";
+                  $startContent .= "\n" . '{{' . $mediaFileContainDirWikiFormat . $prettyFile . '}}' . "\n";
                 }
                 elseif (strpos($attachMime, 'application') !== FALSE && (strpos($attachMime, 'x-shellscript') !== FALSE OR strpos($attachMime, 'x-python') !== FALSE OR strpos($attachMime, 'x-javascript') !== FALSE OR strpos($attachMime, 'x-php') !== FALSE OR strpos($attachMime, 'x-genesis-rom') !== FALSE OR strpos($attachMime, 'x-desktop') !== FALSE OR strpos($attachMime, 'x-perl') !== FALSE)) {
                   echo '>>>>>>>>>>>>>>>>Найдена строка с кодом:' . $attachMime . "\n";
