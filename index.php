@@ -360,6 +360,11 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
                 $prettyFile = prettyPath($entry, TRUE); //@warning Base names media files only! 
                 echo 'Приведённое имя файла: ' . $prettyFile . "\n";
                 //оставшиеся файлы без расширения. находим mime и предполагаемое расширение.
+                // Форматируем путь согласно вики синтаксису
+                $mediaFileContainDirWikiFormat = ':' . mb_str_replace('/', ':', $currentOutFileNameInsideDir);
+                echo 'Содержащая файл медиа директория: ' . $mediaFileContainDirWikiFormat . "\n";
+
+
                 if ($attachExtension == '') {
 
                   $attachType = getMimeExtennsion($inDir . "/" . $currentFileNameInsideDir . $entry);
@@ -375,28 +380,30 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
 
                 if ($attachExtension == 'bat' OR $attachExtension == 'cmd') {
                   echo '>>>>>>>>>>>>>>>>Найден файл c расширением bat/cmd:' . $prettyFile . "\n";
-                  $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . ' -e CP866}}' . "\n";
+                  $startContent .= "\n" . '{{src -f ' . $mediaFileContainDirWikiFormat . $prettyFile . ' -l ' . $attachExtension . ' -e CP866}}' . "\n";
                 }
                 elseif ($attachExtension == 'reg' OR $attachExtension == 'vbs' OR $attachExtension == 'au3') {
                   echo '>>>>>>>>>>>>>>>>Найден файл c расширением reg/vbs/au3:' . $prettyFile . "\n";
-                  $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . ' -e CP1251}}' . "\n";
+                  $startContent .= "\n" . '{{src -f ' . $mediaFileContainDirWikiFormat . $prettyFile . ' -l ' . $attachExtension . ' -e CP1251}}' . "\n";
                 }
                 elseif ($attachExtension == 'conf' OR $attachExtension == 'sh') {
                   echo '>>>>>>>>>>>>>>>>Найден файл c расширением conf/sh:' . $prettyFile . "\n";
-                  $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . '}}' . "\n";
+                  $startContent .= "\n" . '{{src -f ' . $mediaFileContainDirWikiFormat . $prettyFile . ' -l ' . $attachExtension . '}}' . "\n";
                 }
                 elseif (strpos($attachMime, 'text') !== FALSE && strpos($attachMime, 'x-sql') === FALSE && strpos($attachMime, 'x-xslt') === FALSE && strpos($attachMime, 'x-log') === FALSE && strpos($attachMime, 'x-comma-separated-values') === FALSE) {
                   echo '>>>>>>>>>>>>>>>>Найдена строка с текстом:' . $attachMime . "\n";
-                  $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . '}}' . "\n";
+                  $startContent .= "\n" . '{{src -f ' . $mediaFileContainDirWikiFormat . $prettyFile . ' -l ' . $attachExtension . '}}' . "\n";
                 }
                 elseif (strpos($attachMime, 'image') !== FALSE && strpos($attachMime, 'djvu') === FALSE) {
                   echo '>>>>>>>>>>>>>>>>Найдена строка с изображением:' . $attachMime . "\n";
-                  $startContent .= "\n" . '{{ ' . $prettyFile . ' }}' . "\n";
+                  $startContent .= "\n" . '{{ ' . $mediaFileContainDirWikiFormat . $prettyFile . ' }}' . "\n";
                 }
                 elseif (strpos($attachMime, 'application') !== FALSE && (strpos($attachMime, 'x-shellscript') !== FALSE OR strpos($attachMime, 'x-python') !== FALSE OR strpos($attachMime, 'x-javascript') !== FALSE OR strpos($attachMime, 'x-php') !== FALSE OR strpos($attachMime, 'x-genesis-rom') !== FALSE OR strpos($attachMime, 'x-desktop') !== FALSE OR strpos($attachMime, 'x-perl') !== FALSE)) {
                   echo '>>>>>>>>>>>>>>>>Найдена строка с кодом:' . $attachMime . "\n";
-                  $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . '}}' . "\n";
+                  $startContent .= "\n" . '{{src -f ' . $mediaFileContainDirWikiFormat . $prettyFile . ' -l ' . $attachExtension . '}}' . "\n";
                 }
+                echo 'Текущая директория медиа - проверка: ' . $currentOutFileNameInsideDir . "\n";
+                echo 'А это в цикле, сверяем: ' . $currentFileNameInsideDir . "\n";
               }
             }
           }
