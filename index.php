@@ -373,24 +373,29 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
                 }
                 //=== Теперь смотрим, что за mime и согасно им встраиваем в страницу
 
-                if ($attachExtension == 'bat' OR $attachExtension == 'cmd' OR $attachExtension == 'vbs') {
-                  echo '>>>>>>>>>>>>>>>>Найден файл c расширением bat/cmd/vbs:' . $prettyFile . "\n";
-                  $startContent .= "\n".'{{src -f ' . $prettyFile . ' -l ' . $attachExtension . ' -e CP866}}' . "\n";
-                }  elseif ($attachExtension == 'reg') {
-                  echo '>>>>>>>>>>>>>>>>Найден файл c расширением reg:' . $prettyFile . "\n";
-                  $startContent .= "\n".'{{src -f ' . $prettyFile . ' -l ' . $attachExtension . ' -e CP1251}}' . "\n";
+                if ($attachExtension == 'bat' OR $attachExtension == 'cmd') {
+                  echo '>>>>>>>>>>>>>>>>Найден файл c расширением bat/cmd:' . $prettyFile . "\n";
+                  $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . ' -e CP866}}' . "\n";
+                }
+                elseif ($attachExtension == 'reg' OR $attachExtension == 'vbs') {
+                  echo '>>>>>>>>>>>>>>>>Найден файл c расширением reg/vbs:' . $prettyFile . "\n";
+                  $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . ' -e CP1251}}' . "\n";
+                }
+                elseif ($attachExtension == 'conf' OR $attachExtension == 'sh') {
+                  echo '>>>>>>>>>>>>>>>>Найден файл c расширением conf/sh:' . $prettyFile . "\n";
+                  $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . '}}' . "\n";
                 }
                 elseif (strpos($attachMime, 'text') !== FALSE && strpos($attachMime, 'x-sql') === FALSE && strpos($attachMime, 'x-xslt') === FALSE && strpos($attachMime, 'x-log') === FALSE && strpos($attachMime, 'x-comma-separated-values') === FALSE) {
                   echo '>>>>>>>>>>>>>>>>Найдена строка с текстом:' . $attachMime . "\n";
-                  $startContent .= "\n".'{{src -f ' . $prettyFile . ' -l ' . $attachExtension . '}}' . "\n";
+                  $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . '}}' . "\n";
                 }
                 elseif (strpos($attachMime, 'image') !== FALSE && strpos($attachMime, 'djvu') === FALSE) {
                   echo '>>>>>>>>>>>>>>>>Найдена строка с изображением:' . $attachMime . "\n";
-                  $startContent .= "\n".'{{ ' . $prettyFile . ' }}' . "\n";
+                  $startContent .= "\n" . '{{ ' . $prettyFile . ' }}' . "\n";
                 }
                 elseif (strpos($attachMime, 'application') !== FALSE && (strpos($attachMime, 'x-shellscript') !== FALSE OR strpos($attachMime, 'x-python') !== FALSE OR strpos($attachMime, 'x-javascript') !== FALSE OR strpos($attachMime, 'x-php') !== FALSE OR strpos($attachMime, 'x-genesis-rom') !== FALSE OR strpos($attachMime, 'x-desktop') !== FALSE OR strpos($attachMime, 'x-perl') !== FALSE)) {
                   echo '>>>>>>>>>>>>>>>>Найдена строка с кодом:' . $attachMime . "\n";
-                  $startContent .= "\n".'{{src -f ' . $prettyFile . ' -l ' . $attachExtension . '}}' . "\n";
+                  $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . '}}' . "\n";
                 }
               }
             }
