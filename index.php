@@ -377,8 +377,8 @@ for ($i = 0; $i < count($sourceFiles); $i++) {
                   echo '>>>>>>>>>>>>>>>>Найден файл c расширением bat/cmd:' . $prettyFile . "\n";
                   $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . ' -e CP866}}' . "\n";
                 }
-                elseif ($attachExtension == 'reg' OR $attachExtension == 'vbs') {
-                  echo '>>>>>>>>>>>>>>>>Найден файл c расширением reg/vbs:' . $prettyFile . "\n";
+                elseif ($attachExtension == 'reg' OR $attachExtension == 'vbs' OR $attachExtension == 'au3') {
+                  echo '>>>>>>>>>>>>>>>>Найден файл c расширением reg/vbs/au3:' . $prettyFile . "\n";
                   $startContent .= "\n" . '{{src -f ' . $prettyFile . ' -l ' . $attachExtension . ' -e CP1251}}' . "\n";
                 }
                 elseif ($attachExtension == 'conf' OR $attachExtension == 'sh') {
