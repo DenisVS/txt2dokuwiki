@@ -301,13 +301,17 @@ function insertCherezOdin($param, $param1) {
 
 function prettyPath($param, $translit = FALSE) {
   $param = mb_strtolower($param); // к нижнему регистру
-  $param = mb_str_replace(' ', '_', $param); //запаятые в подчёркивания
+  $param = mb_str_replace(' ', '_', $param); //пробелы в подчёркивания
+  $param = mb_str_replace('—', '-', $param); //дефисы в минусы
   $param = mb_str_replace('+', '_', $param); //полюсы в подчёркивания
-  $param = mb_str_replace(',', '_', $param); //точки в подчёркивания
+  $param = mb_str_replace('!', '_', $param); //восклицания в подчёркивания
+  $param = mb_str_replace('?', '_', $param); //вопросы в подчёркивания
+  $param = mb_str_replace(',', '_', $param); //запятые в подчёркивания
   $param = mb_str_replace('(', '_', $param); //скобки в подчёркивания
   $param = mb_str_replace(')', '_', $param); //скобки в подчёркивания
   $param = preg_replace('%(_*)(\/)(_*)%m', '$2', $param); //лидирующие подчёркивания удаляем
   $param = preg_replace('/__+/m', '_', $param); //повторяющиеся подчёркивания сливаем
+  $param = preg_replace('/\-\-+/m', '_', $param); //повторяющиеся минусы сливаем
   $param = preg_replace('/(.*?)(_*)\z/m', '$1', $param); //подчёркивания в конце строки
   $param = preg_replace('/(_*)\./m', '.', $param); // перед точкой подчёркивания не нужны
   if ($translit == TRUE) {
